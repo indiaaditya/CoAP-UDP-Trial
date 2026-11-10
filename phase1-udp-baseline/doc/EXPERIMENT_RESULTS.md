@@ -39,7 +39,7 @@ client.send(Buffer.from('PING', 'ascii'), 56830, '127.0.0.1');
 '@ | node
 ```
 
-6. Observe exact PONG and compare the client endpoint with the server's reply destination. Stop with Ctrl+C in the server terminal. Interactive Ctrl+C confirmation remains outstanding as described below.
+6. Observe exact PONG and compare the client endpoint with the server's reply destination. Stop with Ctrl+C in the server terminal. Manual Ctrl+C termination was subsequently verified successfully by the user, as recorded below.
 
 ## Executed tests
 
@@ -54,10 +54,14 @@ A temporary command-line orchestration client used a bound localhost socket, exa
 | T04 | Client endpoint 127.0.0.1:54700 matched logged reply destination; response source 127.0.0.1:56830 | Passed |
 | T05 | 20 sequential exchanges; 20 successes, zero response timeouts or assertion failures | Passed |
 | T06 | UNKNOWN, ping, PING+LF, PING+NUL, PING+0xff logged; no reply within 500 ms each | Passed |
-| T07 | Repeated tool-injected Ctrl+C did not release socket; interactive termination not established | Inconclusive; manual confirmation required |
+| T07 | Original tool-injected Ctrl+C attempt was inconclusive; user subsequently reported successful manual Ctrl+C termination | Passed (user-reported manual verification) |
 | T08 | Second server exited 1 with EADDRINUSE; original server answered another PING | Passed |
 
 Recognized traffic: 21 requests, 21 exact responses, zero response timeouts or assertion failures. Unknown traffic: five requests, zero responses, five expected observation timeouts. A separate startup was used for T07. After Ctrl+C injection, a bind probe reported EADDRINUSE; the process was explicitly stopped and a fresh bind confirmed the port was reusable. Forced cleanup is not evidence of normal Ctrl+C termination.
+
+## Manual verification and source review
+
+The user subsequently confirmed that T07 (Ctrl+C termination) was manually verified successfully and that cloud.js is acceptable without source changes. This is user-reported evidence, not a newly executed agent test. The manual verification date, platform, Node.js version and console transcript were not supplied. The original automated attempt and cleanup observations above are retained as historical evidence.
 
 ## Representative captured logs
 
@@ -74,4 +78,4 @@ Cleanup confirmed: port 56830 reusable
 
 ## Limitations
 
-Only localhost was tested. Send-error and non-bind runtime-error branches were implemented but not fault-injected. T07 is inconclusive because the tool did not establish Ctrl+C delivery to Node.js. Process/network metadata queries were restricted. No LAN, embedded, CoAP, security or broader reliability conclusions follow. Phase 1 acceptance remains pending review and later work.
+Only localhost was tested. Send-error and non-bind runtime-error branches were implemented but not fault-injected. The original automated T07 attempt did not establish Ctrl+C delivery; the subsequent user-reported manual T07 passed. Process/network metadata queries were restricted. No LAN, embedded, CoAP, security or broader reliability conclusions follow. Step 1 source review is accepted; complete Phase 1 milestone acceptance remains pending later work and review.

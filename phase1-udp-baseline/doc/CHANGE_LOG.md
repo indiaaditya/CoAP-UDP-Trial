@@ -8,6 +8,10 @@ Added phase1-udp-baseline/src/cloud.js for the approved dependency-free UDP base
 
 Implemented exact PING/PONG, sender-directed replies, packet logging and basic socket/send errors to establish the request/response baseline. No future-phase functionality, dependencies or build artifacts introduced.
 
-Validation: node --check passed. T01-T06 and T08 passed on localhost: 20 sequential transactions plus one liveness request, 21/21 responses; five nonmatching packets received no response. T07 was attempted but injected Ctrl+C did not stop the tool-managed process; normal interactive termination remains unverified. Explicit cleanup released the port. Detailed evidence is in EXPERIMENT_RESULTS.md.
+Validation: node --check passed. T01-T06 and T08 passed on localhost: 20 sequential UDP request/response exchanges plus one liveness request, 21/21 responses; five nonmatching packets received no response. T07 was attempted but injected Ctrl+C did not stop the tool-managed process; normal interactive termination was unverified in that automated run. Explicit cleanup released the port. Detailed evidence is in EXPERIMENT_RESULTS.md.
 
 No merge or milestone tag created. Step 2 not started.
+
+## Step 1 review update
+
+The user reviewed cloud.js and found it acceptable; no source changes requested. T07 passed by user-reported manual Ctrl+C verification. This supplements the original automated attempt without replacing its evidence. The manual test date, runtime and platform were not supplied. Updated EXPERIMENT_RESULTS.md, this log, project-doc/PHASE_ROADMAP.md and project-doc/EXPERIMENT_COMPARISON.md to reflect the review and use UDP request/response exchange terminology. No source changes or additional automated tests were required. Step 2 and milestone tagging remain unauthorized.
