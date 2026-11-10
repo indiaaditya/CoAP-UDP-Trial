@@ -15,3 +15,7 @@ No merge or milestone tag created. Step 2 not started.
 ## Step 1 review update
 
 The user reviewed cloud.js and found it acceptable; no source changes requested. T07 passed by user-reported manual Ctrl+C verification. This supplements the original automated attempt without replacing its evidence. The manual test date, runtime and platform were not supplied. Updated EXPERIMENT_RESULTS.md, this log, project-doc/PHASE_ROADMAP.md and project-doc/EXPERIMENT_COMPARISON.md to reflect the review and use UDP request/response exchange terminology. No source changes or additional automated tests were required. Step 2 and milestone tagging remain unauthorized.
+
+## Project-wide development standard
+
+Added project-doc/CODEX_DEVELOPMENT_GATES.md from the user-supplied standard and registered it in FILE_REGISTRY.md. The standard applies beginning with Phase 1, Step 2 and to future modifications of Step 1; the original Step 1 implementation is grandfathered. The example uses UDP request/response exchanges in accordance with the approved terminology. No implementation source changed, no new tests executed, no Step 2 work or milestone tag introduced. Documentation checked for completeness against the supplied text and for whitespace errors.

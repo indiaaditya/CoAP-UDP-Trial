@@ -17,3 +17,4 @@ Paths are repository-relative. All listed files are retained; introduced in Phas
 | project-doc/ARCHITECTURE_DECISIONS.md | Cross-phase decision history |
 | project-doc/PHASE_ROADMAP.md | Approved objectives and status |
 | project-doc/EXPERIMENT_COMPARISON.md | Evidence-based comparisons |
+| project-doc/CODEX_DEVELOPMENT_GATES.md | Permanent project-wide G1–G4 design, implementation and testing standard; introduced after Step 1 review; retained |
