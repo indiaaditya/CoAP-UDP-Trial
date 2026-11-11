@@ -44,3 +44,12 @@ Updated FILE_REGISTRY.md, FUNCTION_REGISTRY.md, VARIABLE_REGISTRY.md, PROTOCOL_R
 ## Step 3 milestone-documentation audit — 2026-11-11
 
 All 21 tracked files at input commit b13620fe2b75084bd31fe5869da57c00beef8049 are covered by the registry above. README and Office/diagram artifacts are retained unchanged. Registries cover the current NodeJS server and four ESP-IDF project files; .private/, generated configuration and credential-bearing outputs remain local and ignored. No new file is introduced for closure: EXPERIMENT_RESULTS.md contains the completion report, source/artifact identity table and complete effective non-secret sdkconfig snapshot; ARCHITECTURE_DECISIONS.md contains the consolidated approved G2 record and final flowchart. These are documentation records, not additional implementation or release artifacts. No earlier failure observation has been removed.
+
+
+## Dedicated resource baseline — 2026-11-11
+
+| File | Purpose / introduction / retention |
+| --- | --- |
+| phase1-udp-baseline/doc/RESOURCE_BASELINE.md | Dedicated raw-UDP ESP32 resource record for future like-for-like comparisons; introduced by the user-authorized documentation-only resource-baseline task after Step 3; retained, tracked |
+
+Consolidates existing build/runtime evidence, explicit derived values and unmeasured gaps, with source/run/image provenance. Does not modify historical observations or authorize new instrumentation, builds, device actions or tests.
