@@ -19,7 +19,7 @@ Paths are repository-relative. All listed files are retained; introduced in Phas
 | project-doc/EXPERIMENT_COMPARISON.md | Evidence-based comparisons |
 | project-doc/CODEX_DEVELOPMENT_GATES.md | Permanent project-wide G1–G4 design, implementation and testing standard; introduced after Step 1 review; retained |
 | project-doc/Notings.xlsx | User-maintained project notes workbook; introduced during Step 2 G2 review; retained |
-| project-doc/plantUML/FlowChart/ESP32-UDP Client.png | User-supplied rendering of the proposed Step 2 flowchart; retained; G2 approval pending |
+| project-doc/plantUML/FlowChart/ESP32-UDP Client.png | User-supplied rendering of the proposed Step 2 flowchart; retained as a historical pre-final-revision rendering; final G2 was approved before G3 |
 | .gitignore | Excludes Office temporary lock files; introduced during Step 2 G2 review; retained |
 
 
@@ -39,3 +39,8 @@ All paths below are repository-relative. Retained tracked files were introduced 
 | .gitignore | Extended to exclude private credentials, generated configuration and build output |
 
 Updated FILE_REGISTRY.md, FUNCTION_REGISTRY.md, VARIABLE_REGISTRY.md, PROTOCOL_REGISTRY.md, CHANGE_LOG.md and EXPERIMENT_RESULTS.md, plus project-doc/ARCHITECTURE_DECISIONS.md and project-doc/PHASE_ROADMAP.md. Existing cloud.js, README.md and SDK source are unchanged. Reserved test/ and rls/ still contain only .gitkeep. The user-added diagram remains a historical proposal rendering; final startup/cleanup revisions were approved in the design review before G3.
+
+
+## Step 3 milestone-documentation audit — 2026-11-11
+
+All 21 tracked files at input commit b13620fe2b75084bd31fe5869da57c00beef8049 are covered by the registry above. README and Office/diagram artifacts are retained unchanged. Registries cover the current NodeJS server and four ESP-IDF project files; .private/, generated configuration and credential-bearing outputs remain local and ignored. No new file is introduced for closure: EXPERIMENT_RESULTS.md contains the completion report, source/artifact identity table and complete effective non-secret sdkconfig snapshot; ARCHITECTURE_DECISIONS.md contains the consolidated approved G2 record and final flowchart. These are documentation records, not additional implementation or release artifacts. No earlier failure observation has been removed.

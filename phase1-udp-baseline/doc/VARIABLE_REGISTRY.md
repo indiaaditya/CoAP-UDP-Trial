@@ -63,3 +63,8 @@ Owner/file: phase1-udp-baseline/src/esp32-udp-client/main/main.c. All introduced
 Private macros TRIAL_WIFI_SSID and TRIAL_WIFI_PASSWORD are string literals defined only in the ignored .private/wifi_credentials.h. No values recorded here. They compile into local firmware, so generated outputs are not tracked.
 
 Deadline arithmetic uses (TickType_t)(now - start), compares elapsed against budget before subtraction, and waits only on the remaining budget. Both startup and IPv4 waits share the same deadline; the tick count may wrap once safely during the short bounded interval. No new application task, retry counter, persistent device state or protocol field.
+
+
+## Step 3 audit — 2026-11-11
+
+Checked all file-scope C constants/handles, significant main-run locals, private macro names and NodeJS module bindings against the committed sources at b13620f. Names/types/scopes/defaults match the tables above; no protocol/state variable additions. The exact effective non-secret ESP-IDF build configuration is archived in EXPERIMENT_RESULTS.md; private macro values remain excluded. Local source main.c SHA-256 matches the committed Git content and the G4 record. No configuration was regenerated or device state inspected in Step 3.

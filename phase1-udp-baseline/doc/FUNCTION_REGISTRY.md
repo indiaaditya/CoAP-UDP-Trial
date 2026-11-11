@@ -1,6 +1,6 @@
 # Function and callback registry
 
-No named function declarations or wrappers are introduced. All callbacks below are anonymous, in phase1-udp-baseline/src/cloud.js, introduced in Phase 1, Step 1. Return values are unused (undefined).
+Step 1 introduces no named function declarations or wrappers. Its four callbacks below are anonymous, in phase1-udp-baseline/src/cloud.js, introduced in Phase 1, Step 1. Return values are unused (undefined).
 
 | Callback | Purpose | Inputs | Outputs / effects | Trigger |
 | --- | --- | --- | --- | --- |
@@ -41,3 +41,8 @@ Explicit component dependencies: esp_wifi, esp_event, esp_netif, nvs_flash, lwip
 Close socket; stop Wi-Fi if started; unregister both application handler instances using exact registration keys. Only after successful unregistration of all registered application callbacks is the event group deleted and its static handle cleared. If unregistration fails, retain the group until reset. Continue Wi-Fi deinit, default interface destruction, default loop deletion and NVS deinit only where ownership/dependency guards permit. Cleanup errors are separately logged; dependent objects may remain until reset. ESP-NETIF/lwIP infrastructure remains until reset.
 
 Callback safety is based on inspected ESP-IDF 5.5.4 components/esp_event/esp_event.c: dispatch invokes callbacks under the loop mutex; unregister synchronizes with that mutex and removes or marks registrations unregistered before returning. Cleanup runs in app_main, never from a callback.
+
+
+## Step 3 audit — 2026-11-11
+
+Checked against committed cloud.js and main/main.c at b13620f: exactly four significant anonymous NodeJS callbacks and two custom C function definitions; their names, signatures, triggers, API ownership and cleanup responsibilities match this registry. No additional custom functions/tasks or external dependencies were found. The sole esp_wifi_connect call is in app_main after the STARTED wait. The final approved G2 flow and cross-references are consolidated in project-doc/ARCHITECTURE_DECISIONS.md. This was static documentation/source inspection only, not another hardware test or fault-injection run.
