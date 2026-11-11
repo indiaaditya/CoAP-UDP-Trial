@@ -32,3 +32,8 @@ Implemented the approved nested ESP-IDF project: project/component CMakeLists.tx
 Build/size inspection completed successfully with verified ESP-IDF 5.5.4 and ccache disabled. Application binary 757920 bytes, bootloader 22272 bytes; application fits its 1 MiB factory partition with 28% free. No main.c compiler warnings emitted. Initial cache stall interrupted; process-scoped Git ownership settings fixed version discovery. Old unused-tool notice remains informational. Full evidence and hashes in EXPERIMENT_RESULTS.md. No firmware-design deviations, external dependencies or additional custom functions/tasks introduced.
 
 No G4 tests, flashing, monitoring or network experiments executed. Existing NodeJS server, README and SDK unchanged. Independent G3 review and explicit G4 approval required before testing. No merge, tag or Step 3.
+
+
+## 2026-11-11 — Step 2 G4 hardware attempt and boot failure
+
+G3 source accepted; G4 authorized. Executed S2-T01-T05 and S2-T14: five PASS and boot-stage FAIL for T05. Verified flash writes after manual download entry, but ROM rejected the boot header. Read-only security inspection reported flash encryption enabled, SPI_BOOT_CRYPT_CNT=0x1 and an XTS_AES_128 key purpose, conflicting with the approved plaintext deployment baseline. T06-T13 were not executed. Recorded factual logs, G4 binary hash, limitations and static-review scope in EXPERIMENT_RESULTS.md. Updated PHASE_ROADMAP.md. No source/SDK/security-state changes, whole-chip erase, AP changes, merge, tag or phase advancement. Stopped the test-owned UDP server and left the board in download mode. Correction requires user direction/design approval before further writes.

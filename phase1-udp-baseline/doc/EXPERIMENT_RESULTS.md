@@ -173,3 +173,77 @@ The following suite requires a separate explicit G4 authorization. G3 build/pack
 | S2-T14 | Static partial-init cleanup review | Only acquired resources accessed; callback lifetime protected | Not executed as formal G4 review; deferred |
 
 For G4, record each setup, expected result, actual result, PASS/FAIL or not executed, representative logs and observations. Temporary command-line responders only; no permanent test-client file or cloud.js modification authorized. Runtime credential values must be omitted from tracked logs.
+
+
+# Phase 1, Step 2 — G4 hardware test attempt (2026-11-11)
+
+G3 source review was accepted and G4 explicitly authorized by the user. Implementation commit e7de4f70d1feb93853fcd6b78f72b3e89d4dfe8d; main.c SHA-256 unchanged: f5e306b74759f66a02463ba552afcfe570e09c9e7b45fd7017564486aa6bf7a5. No source, SDK, eFuse or security configuration changes made during testing.
+
+## Setup and evidence
+
+Same Windows/ESP-IDF 5.5.4 toolchain as G3. Rechecked Python 3.11.2, GCC 14.2.0, clean tracked SDK, and all 27 recursively listed submodules at pinned revisions. Submodule status output SHA-256: 853607acddbe222c52bc9f90cac048c294c171e0807cd73c045d436477c5dc76. PC Wi-Fi IPv4 observed as 192.168.0.170. No server was listening initially; started unchanged cloud.js on 0.0.0.0:56830 for the test and stopped that test-owned process when hardware testing was blocked. No firewall changes made.
+
+Temporarily renamed the ignored private header within .private/, ran idf.py --no-ccache reconfigure, and restored it in a finally block. Configuration failed with exit 2 and the intended missing-header message. This negative run also emitted a CMake developer syntax warning in generated build_properties.temp.cmake. With the header restored, reconfigure/build/size exited 0, without a main.c compiler warning. No credential values or generated/private artifacts were present in tracked files.
+
+G4 application binary: 757920 bytes; SHA-256 35f77f2325b7dc54cd395f4f3abae5d9436a0be452ceacae5d38d8eb299ffb88. Rebuild metadata identifies the committed source; G3 hashes above remain historical evidence for the earlier pre-commit build. Flash/stack/PSRAM/console settings remained as approved.
+
+Initial connection attempts with no_reset and automatic reset failed before writing. After user-assisted BOOT/EN entry to download mode, esptool wrote the generated bootloader at 0x0, application at 0x10000, and partition table at 0x8000. All three writes passed esptool hash verification. Erased ranges were limited to the flashed image sectors: 0x00000000-0x00005fff, 0x00010000-0x000c9fff, and 0x00008000-0x00008fff. No whole-chip erase or NVS erase performed.
+
+The first serial capture was empty. Releasing the UART DTR/RTS lines and resetting exposed repeated ROM invalid-header messages. An initial capture command encountered a host cp1252 Unicode printing error; a subsequent UTF-8-safe capture preserved representative boot output locally in the ignored build directory. This host capture issue is separate from the observed ROM boot failure.
+
+Representative actual output:
+
+```text
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+Wrote 757920 bytes (475282 compressed) at 0x00010000
+Hash of data verified.
+ESP-ROM:esp32s3-20210327
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+invalid header: 0x71328111
+rst:0x7 (TG0WDT_SYS_RST),boot:0x8 (SPI_FAST_FLASH_BOOT)
+```
+
+## Read-only root-cause investigation
+
+Following another user-assisted download-mode entry, ran esptool --no-stub get_security_info without resetting afterward. It reported:
+
+```text
+Flags: 0x00000680
+BLOCK_KEY0 - XTS_AES_128_KEY
+Secure Boot: Disabled
+Flash Encryption: Enabled
+SPI Boot Crypt Count (SPI_BOOT_CRYPT_CNT): 0x1
+Dcache in UART download mode: Disabled
+Icache in UART download mode: Disabled
+JTAG: Permanently Disabled
+Staying in bootloader.
+```
+
+This is a security-state mismatch with the approved unencrypted firmware baseline. Espressif documents that an odd set-bit count in SPI_BOOT_CRYPT_CNT enables boot-time flash decryption, and that the bootloader is an encrypted image region: https://docs.espressif.com/projects/esp-idf/en/v5.5.4/esp32s3/security/flash-encryption.html . The successful plaintext writes do not establish boot compatibility with this provisioned device. No key bytes were read, no security state was changed, and no attempt was made to disable encryption or JTAG protection. The device was left in download mode.
+
+## Test results
+
+| Test | Purpose and input/setup | Expected result | Actual result / relevant evidence | Status |
+| --- | --- | --- | --- | --- |
+| S2-T01 | Inspect SDK/tools/submodules | Exact clean tracked v5.5.4 baseline and pinned dependencies | v5.5.4, commit 735507283d5b2f9fb363a1901172dbd9e847945d; no tracked SDK diff; 27 pinned submodules; Python/GCC verified | PASS |
+| S2-T02 | Configure without private header | Fail clearly without disclosing credentials | Exit 2; Missing local .private/wifi_credentials.h; header restored afterward | PASS |
+| S2-T03 | Configure/build with private header | Successful approved ESP32-S3 configuration/build | Exit 0; 757920-byte application, 28% app partition free; no main.c warning | PASS |
+| S2-T04 | Review ignore rules and tracked content | Credentials/build outputs not tracked | Private header, sdkconfig and binary ignored; neither supplied credential value found in tracked file bytes | PASS |
+| S2-T05 | Flash and boot COM14 | Verified image writes and application startup | Three writes hash-verified; ROM repeatedly reports invalid header; no ESP-IDF/application startup | FAIL (boot stage) |
+| S2-T06 | Connect to approved Wi-Fi within 30 seconds | IPv4 acquired | Application never starts; Wi-Fi functionality not exercised | NOT EXECUTED |
+| S2-T07 | Baseline UDP exchanges | attempts=20, successes=20 with endpoint correlation | No application execution; no ESP32 PING observed by server | NOT EXECUTED |
+| S2-T08 | Server unavailable | One failed attempt, no further sends | Blocked by boot failure | NOT EXECUTED |
+| S2-T09 | Temporary malformed-response peer | Reject FAIL, PONG+LF and oversized data in separate runs | Blocked by boot failure; no negative responder started | NOT EXECUTED |
+| S2-T10 | Response from incorrect source port | Do not accept response | Blocked by boot failure | NOT EXECUTED |
+| S2-T11 | AP unavailable before boot | Zero attempts; bounded failure | Blocked by boot failure; AP not changed | NOT EXECUTED |
+| S2-T12 | AP disabled during exchanges | Latch failure and stop sends | Blocked by boot failure; AP not changed | NOT EXECUTED |
+| S2-T13 | Completion/reset | Cleanup and resource logs; fresh run after reset | Application never starts; cannot observe cleanup or counters | NOT EXECUTED |
+| S2-T14 | Static partial-initialization cleanup review | Guard acquired resources and callback lifetime | Acquisition flags/handles checked; exact unregister keys; group deletion gated on all registered callbacks being removed; dependent resources retained on shutdown failure; one connect owner and bounded tick arithmetic reviewed | PASS (static inspection only) |
+
+Summary: 5 PASS, 1 FAIL, 8 NOT EXECUTED. No firmware UDP request/response exchange was observed. Application attempt/success counters, runtime heap and stack measurements are unavailable because app_main did not execute; they are not reported as zero-valued firmware measurements. No runtime fault-injection coverage is claimed by S2-T14, and SDK-internal assertion behavior remains untested.
+
+## Correction/design status
+
+Stop affected G4 execution at the observed boot failure. No firmware correction was implemented. Resuming requires either verification of an equivalent unencrypted target, or explicit user approval of revised deployment/security requirements for the existing provisioned target through the applicable design gate. No milestone acceptance, merge, tag or Step 3 work authorized by this test attempt.
