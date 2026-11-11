@@ -18,3 +18,6 @@ Paths are repository-relative. All listed files are retained; introduced in Phas
 | project-doc/PHASE_ROADMAP.md | Approved objectives and status |
 | project-doc/EXPERIMENT_COMPARISON.md | Evidence-based comparisons |
 | project-doc/CODEX_DEVELOPMENT_GATES.md | Permanent project-wide G1–G4 design, implementation and testing standard; introduced after Step 1 review; retained |
+| project-doc/Notings.xlsx | User-maintained project notes workbook; introduced during Step 2 G2 review; retained |
+| project-doc/plantUML/FlowChart/ESP32-UDP Client.png | User-supplied rendering of the proposed Step 2 flowchart; retained; G2 approval pending |
+| .gitignore | Excludes Office temporary lock files; introduced during Step 2 G2 review; retained |

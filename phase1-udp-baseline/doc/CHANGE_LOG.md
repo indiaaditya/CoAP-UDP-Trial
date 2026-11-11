@@ -19,3 +19,7 @@ The user reviewed cloud.js and found it acceptable; no source changes requested.
 ## Project-wide development standard
 
 Added project-doc/CODEX_DEVELOPMENT_GATES.md from the user-supplied standard and registered it in FILE_REGISTRY.md. The standard applies beginning with Phase 1, Step 2 and to future modifications of Step 1; the original Step 1 implementation is grandfathered. The example uses UDP request/response exchanges in accordance with the approved terminology. No implementation source changed, no new tests executed, no Step 2 work or milestone tag introduced. Documentation checked for completeness against the supplied text and for whitespace errors.
+
+## 2026-11-11 — Synchronize user-added review artifacts
+
+Added user-supplied project-doc/Notings.xlsx and project-doc/plantUML/FlowChart/ESP32-UDP Client.png. Added .gitignore to exclude Office lock files and updated FILE_REGISTRY.md. Workbook ZIP integrity checked; supplied Wi-Fi credential values were not found in workbook XML. Flowchart inspected as a review artifact. No firmware generated, no implementation tests performed, and no G2 approval or milestone acceptance implied.
