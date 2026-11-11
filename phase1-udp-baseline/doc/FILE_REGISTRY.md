@@ -56,3 +56,11 @@ Consolidates existing build/runtime evidence, explicit derived values and unmeas
 
 
 Resource-baseline revision (2026-11-11): RESOURCE_BASELINE.md now defines B0–B6 checkpoints and reserves their names separately from evidence IDs E-BUILD/E-CONFIG. It also records read-only retained-linker-map library attribution, explicitly distinguished from an unavailable incremental Wi-Fi-to-UDP or Beken footprint. No new project file, firmware instrument or test artifact created.
+
+## Manual trial procedure — 2026-11-11
+
+| File | Purpose / introduction / retention |
+| --- | --- |
+| phase1-udp-baseline/doc/MANUAL_TEST_PROCEDURE.md | User-supplied revision 1.0 manual ESP32/NodeJS UDP trial procedure and observation-record template; introduced by explicit documentation request; retained, tracked |
+
+Procedure text is preserved as supplied. It describes MT-01 through MT-05; adding it does not execute or record new trials. Canonical recorded results remain in EXPERIMENT_RESULTS.md and checkpoint/image provenance remains in RESOURCE_BASELINE.md.
