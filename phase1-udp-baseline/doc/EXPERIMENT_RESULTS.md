@@ -247,3 +247,100 @@ Summary: 5 PASS, 1 FAIL, 8 NOT EXECUTED. No firmware UDP request/response exchan
 ## Correction/design status
 
 Stop affected G4 execution at the observed boot failure. No firmware correction was implemented. Resuming requires either verification of an equivalent unencrypted target, or explicit user approval of revised deployment/security requirements for the existing provisioned target through the applicable design gate. No milestone acceptance, merge, tag or Step 3 work authorized by this test attempt.
+
+
+# G4 recovery, retest and final available results (2026-11-11)
+
+This section supplements, and does not replace, the original failed boot evidence. The user explicitly approved burning only SPI_BOOT_CRYPT_CNT from 0b001 to 0b011, followed by full-chip erase and reflash of the already approved firmware. The user subsequently corrected the private Wi-Fi SSID capitalization and explicitly directed that AP-unavailable and mid-run AP-disconnect tests remain unexecuted.
+
+## Authorized recovery and configuration correction
+
+Preflight readback: SPI_BOOT_CRYPT_CNT=0b001 and writable; Secure Boot disabled; DIS_DOWNLOAD_MANUAL_ENCRYPT=False. Generated firmware configuration had CONFIG_SECURE_FLASH_ENC_ENABLED unset. Burned only SPI_BOOT_CRYPT_CNT to 3. The tool reported:
+
+```text
+SPI_BOOT_CRYPT_CNT ... 0b001 -> 0b011
+BURN BLOCK0 - OK
+Checking efuses...
+Successful
+Flash Encryption: Disabled
+SPI Boot Crypt Count (SPI_BOOT_CRYPT_CNT): 0x3
+```
+
+Full-chip erase completed in 3.1 seconds. Reflashed the generated bootloader, application and partition table; esptool verified all writes. No further eFuse field or protection setting was changed. Existing key purpose and disabled-JTAG state remain. This erase was specifically authorized after the earlier test attempt; the earlier no-whole-chip-erase record remains accurate for that earlier attempt.
+
+First successful plaintext boot reached ESP-IDF v5.5.4 and app_main. That run could not find the initially configured network: reason=201 (NO_AP_FOUND), attempts=0, successes=0, then returned cleanly. User provided a case correction to the SSID. Changed only the ignored .private/wifi_credentials.h, rebuilt successfully and reflashed with all write hashes verified. Actual credentials are deliberately omitted here. No tracked firmware source or SDK change was needed. PC inspection confirmed it was connected to the corrected network on 2.4 GHz, channel 4.
+
+Final tested binary: 757920 bytes, SHA-256 594f9b9ef0d0abc3d5ddc387f263380254bc862c25426ee3539a8334c1f8d762. Firmware source main.c SHA-256 remains f5e306b74759f66a02463ba552afcfe570e09c9e7b45fd7017564486aa6bf7a5, identical to G3. App version metadata for this rebuild: c10418f-dirty, reflecting documentation edits in progress. Final configuration still uses ESP-IDF 5.5.4, 16 MB QIO flash at 40 MHz, PSRAM disabled and 4096-byte main stack. Credential-bearing binaries and local sanitized captures remain ignored under build/; no permanent responder/test-client source file was created.
+
+## Run observations
+
+Each run was externally restarted using esptool's host-side HardReset over UART RTS, with DTR released. There were no application retries, reconnects or changes to the approved 20-attempt limit. Temporary malformed-response fixtures were inline NodeJS dgram commands; the existing cloud.js was unchanged.
+
+| Run | Setup / input | Actual attempts / successes | Actual observation |
+| --- | --- | --- | --- |
+| Corrected-network baseline | Unchanged cloud.js at 192.168.0.170:56830 | 20 / 20 | Exact PONG throughout; IPv4 acquired at firmware tick-log time 2886 ms; final result at 22096 ms |
+| Server absent, first setup attempt | No UDP listener | 0 / 0 | Wi-Fi association stopped first with reason=4; UDP condition not reached; retained as setup failure, not a successful timeout test |
+| Server absent, independent run 2 | Still no UDP listener | 1 / 0 | Receive timeout errno=11 at 4196 ms after send at 2186 ms; returned from app_main; no second send |
+| Malformed response: FAIL | Temporary peer responds with four nonmatching bytes | 1 / 0 | Rejected length-4 nonmatching response; one request observed by peer |
+| Malformed response: PONG+LF | Temporary peer sends five bytes | 1 / 0 | Rejected length-5 response; one request observed by peer |
+| Oversized response | Temporary peer sends 100 bytes | 1 / 0 | recv returned 64 bytes (buffer limit); response rejected; one request observed by peer |
+| Wrong source port | Temporary peer sends exact PONG from port 53481 rather than 56830 | 1 / 0 | Receive timeout errno=11; wrong-port datagram not accepted; one request observed by fixture |
+| Reset/completion run | Restart unchanged cloud.js and externally reset target after previous runs | 20 / 20 | Counters restarted; exact PONG throughout; final result at 21426 ms; returned from app_main |
+
+Positive-run evidence: 40 valid responses from 40 requests across two independent 20-exchange runs, with zero positive-run timeouts. Controlled negative cases: five one-attempt runs, no accepted responses; two expected receive timeouts and three expected malformed-response rejections. The additional association setup failure had zero UDP attempts and is not hidden by a retry. No aggregate packet-loss percentage is inferred by combining intentional negative tests with the positive runs.
+
+Original cloud logs matched ESP32 source 192.168.0.122:59185 for the first positive run and 192.168.0.122:60946 for the reset run, with 20 received PING lines and 20 corresponding sender-directed PONG lines in each. ESP32 getsockname logged wildcard 0.0.0.0 plus the matching ephemeral port; the acquired IPv4 event and cloud-side source logs establish the actual interface address. No change was made to address logging.
+
+Representative actual output:
+
+```text
+I (347) spi_flash: detected chip: generic
+I (349) spi_flash: flash io: qio
+I (2886) udp_trial: IPv4 acquired: 192.168.0.122
+I (2886) udp_trial: UDP local=0.0.0.0:59185 peer=192.168.0.170:56830
+I (22096) udp_trial: Result: attempts=20 successes=20 status=PASS
+I (22096) udp_trial: Internal heap: free=277576 minimum=275460 bytes; main stack minimum free=1748 bytes
+Received from 192.168.0.122:59185 bytes=4 payload="PING"
+Sent PONG to 192.168.0.122:59185
+E (4196) udp_trial: Exchange 1 receive timeout: errno=11
+I (4196) udp_trial: Result: attempts=1 successes=0 status=FAIL
+E (2426) udp_trial: Exchange 1 unexpected response: bytes=64 (expected exact PONG)
+I (21426) udp_trial: Result: attempts=20 successes=20 status=PASS
+I (21426) udp_trial: Internal heap: free=277576 minimum=274008 bytes; main stack minimum free=1748 bytes
+I (21506) main_task: Returned from app_main()
+```
+
+### Runtime resource observations
+
+| Measurement | Baseline | Reset/completion run |
+| --- | --- | --- |
+| Internal 8-bit heap free before Wi-Fi | 329724 bytes | 329724 bytes |
+| Internal 8-bit heap free after IPv4 | 278212 bytes | 278200 bytes |
+| Internal heap free at result, before cleanup | 277576 bytes | 277576 bytes |
+| Minimum internal heap observed by result | 275460 bytes | 274008 bytes |
+| Main stack minimum free by result | 1748 bytes | 1748 bytes |
+
+These are two observed runs on this board/network, not guaranteed worst-case resource bounds. The program logs metrics before teardown, so these are not post-cleanup heap measurements. Both positive runs reached the SDK's Returned from app_main line without cleanup warnings or assertion/panic. An error-level disconnect reason=8 line appears during intentional esp_wifi_stop after the PASS summary; it is a cleanup-generated disconnect, not a failed exchange. Failure-path cleanup runs also returned without cleanup warnings. No runtime allocation/unregister failure injection is claimed.
+
+## Final G4 status for review
+
+| Test | Purpose / input and expected result | Actual result / evidence | Status |
+| --- | --- | --- | --- |
+| S2-T01 | Verify exact SDK and pinned tools/submodules | Prior G4 inspection passed; SDK/source baseline unchanged during recovery | PASS |
+| S2-T02 | Missing private header must fail without exposing secrets | Prior G4 configure exit 2 with intended message; header restored | PASS |
+| S2-T03 | Build with private header and approved settings | Corrected private configuration rebuilt successfully; 757920-byte image; no main.c compiler warnings | PASS |
+| S2-T04 | Credentials/generated outputs excluded from tracked content | Private/header/build ignore rules retained; credential values omitted from tracked evidence | PASS |
+| S2-T05 | Verified flashing and successful application startup | Authorized recovery resolved original boot failure; all writes verified; ESP-IDF/app_main booted | PASS on retest; original FAIL retained |
+| S2-T06 | IPv4 within shared 30-second deadline | Corrected configuration acquired IPv4 at 2886/2206 ms in positive runs | PASS on retest; earlier network/setup failures retained |
+| S2-T07 | At most 20 attempts; positive baseline must achieve 20/20 with endpoint correlation | First positive run 20/20; cloud source/destination ports matched | PASS |
+| S2-T08 | Server absent: one failed attempt, no subsequent send | Independent qualifying run: 1/0, errno=11 timeout, one send and clean return; earlier association setup failure recorded separately | PASS on qualifying run |
+| S2-T09 | Reject FAIL, PONG+LF and oversized reply | Three separate runs each 1/0, one request, immediate rejection and clean return | PASS |
+| S2-T10 | Ignore exact PONG from wrong source port | Source port 53481; 1/0, timeout, no second request and clean return | PASS |
+| S2-T11 | AP unavailable before boot | User explicitly directed this AP-control test to remain unexecuted | NOT EXECUTED |
+| S2-T12 | Disable AP during exchanges | User explicitly directed this AP-control test to remain unexecuted | NOT EXECUTED |
+| S2-T13 | Completion, resource logs and externally initiated reset | Second positive run restarted counters and achieved 20/20; resource logs and clean main return observed | PASS |
+| S2-T14 | Static ownership/callback-lifetime review | Earlier static review passed; firmware source unchanged; no runtime fault injection claimed | PASS (static inspection) |
+
+Final available suite: 12 PASS, 2 NOT EXECUTED by user direction. Historical ROM boot failure, initial SSID mismatch and separate association setup failure remain part of the evidence. No claim of all-tests-executed or Phase 1 acceptance. No firmware design deviation or custom function/task/dependency change. The user-approved eFuse/erase deployment exception and private credential correction are documented explicitly.
+
+The final test-owned cloud process and temporary responders were stopped, serial handles closed, and the board left running the approved firmware after its completed run (Wi-Fi stopped by firmware cleanup; no ongoing UDP traffic). No firewall changes, merge, tag or Step 3 work performed. Independent result review and user acceptance remain outstanding.

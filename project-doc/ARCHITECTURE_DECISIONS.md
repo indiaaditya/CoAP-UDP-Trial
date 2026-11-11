@@ -22,3 +22,10 @@ G1 and complete G2 were explicitly approved before G3. Use the existing restored
 Implement only app_main and wifi_event_handler in the approved nested ESP-IDF project. app_main is the sole connection owner, waits for STARTED, and uses one wrap-safe 30-second startup/IPv4 budget. FAILED is latched. Use bundled lwIP connected IPv4 UDP with at most 20 attempted exchanges, exact PING/PONG, two-second receive timeout, no retry/reconnect/custom task. Retain the existing server unchanged.
 
 Stop Wi-Fi, unregister application callbacks and conditionally delete their event group before continuing guarded teardown. On failed unregistration, retain callback-reachable resources until reset. Private credentials are local ignored header macros and firmware outputs remain ignored. Physical 8 MB PSRAM is disabled; flash configured 16 MB QIO at 40 MHz; 40 MHz crystal; 4096-byte main stack; UART at 115200. G3 authorizes build only; G4 flashing/runtime tests need a separate explicit approval. No phase advancement, merge or tag.
+
+
+## ADR-005 — Explicitly approved target recovery (2026-11-11)
+
+After the G4 boot failure exposed a provisioned flash-encryption state, the user explicitly approved advancing SPI_BOOT_CRYPT_CNT from 0b001 to 0b011, a full-chip erase, and reflashing the already approved plaintext firmware. This is a deployment/hardware-state exception to the prior no-eFuse-change/no-whole-chip-erase baseline, not a firmware design change.
+
+Preflight confirmed the counter was 0b001 and writable, Secure Boot was disabled, and the approved generated firmware had flash encryption disabled. Only the requested counter field was burned to 0b011; readback reported flash encryption disabled. The full-chip erase completed and all three firmware image writes were hash-verified. Other existing security state, including provisioned key purpose and permanently disabled JTAG, was not altered. The board subsequently booted ESP-IDF v5.5.4 and app_main successfully. Historical failed-boot evidence is retained.
