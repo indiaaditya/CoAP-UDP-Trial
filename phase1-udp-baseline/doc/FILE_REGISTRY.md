@@ -53,3 +53,6 @@ All 21 tracked files at input commit b13620fe2b75084bd31fe5869da57c00beef8049 ar
 | phase1-udp-baseline/doc/RESOURCE_BASELINE.md | Dedicated raw-UDP ESP32 resource record for future like-for-like comparisons; introduced by the user-authorized documentation-only resource-baseline task after Step 3; retained, tracked |
 
 Consolidates existing build/runtime evidence, explicit derived values and unmeasured gaps, with source/run/image provenance. Does not modify historical observations or authorize new instrumentation, builds, device actions or tests.
+
+
+Resource-baseline revision (2026-11-11): RESOURCE_BASELINE.md now defines B0–B6 checkpoints and reserves their names separately from evidence IDs E-BUILD/E-CONFIG. It also records read-only retained-linker-map library attribution, explicitly distinguished from an unavailable incremental Wi-Fi-to-UDP or Beken footprint. No new project file, firmware instrument or test artifact created.

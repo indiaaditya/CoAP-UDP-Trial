@@ -1,6 +1,6 @@
 # Phase 1 ESP32 Resource Baseline — Raw UDP
 
-Documentation date: 2026-11-11 (Asia/Calcutta). Measurements were obtained during the recorded Phase 1 build/G4 work, not during creation of this document. No firmware/configuration changes, rebuild, device access or additional measurement was performed for this task. This document does not declare milestone acceptance.
+Documentation date: 2026-11-11 (Asia/Calcutta). Hardware resource readings come from the recorded Phase 1 build/G4 work. This revision adds checkpoint labels and read-only analysis of the retained linker map; it does not regenerate firmware or collect new runtime readings. No code/configuration change, rebuild, relink or device access was performed. This document does not declare milestone acceptance.
 
 ## Evidence identifiers and run definitions
 
@@ -8,12 +8,12 @@ Paths below are relative to this document unless otherwise stated. Existing loca
 
 | ID | Existing source | Meaning |
 | --- | --- | --- |
-| B1 | [EXPERIMENT_RESULTS.md — G3 implementation and build evidence](EXPERIMENT_RESULTS.md#phase-1-step-2--g3-implementation-and-build-evidence), especially Build artifact observations | Final-source G3 build before private network correction; section sizes are build measurements from this image, not a separate size report for the final G4 image |
-| B2 | [EXPERIMENT_RESULTS.md — Step 3 reproducibility archive](EXPERIMENT_RESULTS.md#step-3-reproducibility-archive--existing-artifacts-only-2026-11-11) and its complete effective sdkconfig snapshot | Source/artifact hashes, complete non-secret configuration and pinned SDK submodules |
+| E-BUILD | [EXPERIMENT_RESULTS.md — G3 implementation and build evidence](EXPERIMENT_RESULTS.md#phase-1-step-2--g3-implementation-and-build-evidence), especially Build artifact observations | Final-source G3 build before private network correction; section sizes are build measurements from this image, not a separate size report for the final G4 image |
+| E-CONFIG | [EXPERIMENT_RESULTS.md — Step 3 reproducibility archive](EXPERIMENT_RESULTS.md#step-3-reproducibility-archive--existing-artifacts-only-2026-11-11) and its complete effective sdkconfig snapshot | Source/artifact hashes, complete non-secret configuration and pinned SDK submodules |
 | H1 | [EXPERIMENT_RESULTS.md — G4 recovery, retest and final available results](EXPERIMENT_RESULTS.md#g4-recovery-retest-and-final-available-results-2026-11-11), Run observations and Runtime resource observations | Final tested image, two positive runs, heap/stack readings, network and recovery conditions |
 | R1 | H1 Corrected-network baseline; existing local build/g4-corrected-network-baseline-sanitized.log | First successful final-image hardware run: 20 attempts, 20 successes; cloud source 192.168.0.122:59185 |
 | R2 | H1 Reset/completion run; existing local build/g4-reset-completion-sanitized.log | Second successful final-image hardware run after external UART RTS reset: 20 attempts, 20 successes; cloud source 192.168.0.122:60946 |
-| L1 | Existing local build/log/idf_py_stdout_output_21208 and idf_py_stdout_output_4624 | Recorded size-tool output supporting the B1 section breakdown, capacities and percentages |
+| L1 | Existing local build/log/idf_py_stdout_output_21208 and idf_py_stdout_output_4624 | Recorded size-tool output supporting the E-BUILD section breakdown, capacities and percentages |
 | C1 | [main/main.c](../src/esp32-udp-client/main/main.c), [sdkconfig.defaults](../src/esp32-udp-client/sdkconfig.defaults), [FUNCTION_REGISTRY.md](FUNCTION_REGISTRY.md), [VARIABLE_REGISTRY.md](VARIABLE_REGISTRY.md) | Measurement API locations, scope, constants, buffers and configuration |
 
 All build/ log paths in this document are relative to phase1-udp-baseline/src/esp32-udp-client/. H1 remains the primary committed source for the successful runtime results. Supplemental existing capture values are identified separately below. No credential values are included.
@@ -25,20 +25,20 @@ All build/ log paths in this document are relative to phase1-udp-baseline/src/es
 | Module / chip | ESP32-S3-WROOM-1 module identification supplied by user; chip independently identified as ESP32-S3 QFN56, revision v0.2 | H1 and preceding G4 hardware attempt |
 | Flash capacity | 16 MB as reported by identification; this is physical capacity, not application allocation | H1; completion report hardware baseline |
 | Physical PSRAM | 8 MB; embedded AP_3v3 identification | Existing G4 hardware identification |
-| PSRAM use | Disabled; CONFIG_SPIRAM unset | B2, C1; applies to all baseline resource readings |
-| Crystal | 40 MHz | Hardware identification, B2 |
-| Flash operation | QIO selected and observed; 40 MHz configured | B2, H1 spi_flash log |
-| Boot header | SDK flasher uses DIO initially, bootloader enables QIO; these refer to different stages | B1/H1 and completion report |
-| CPU / optimization configuration | CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ=160; CONFIG_COMPILER_OPTIMIZATION_DEBUG=y; CONFIG_PM_ENABLE unset | B2 effective configuration; configuration values, not measured CPU utilization/clock tracing |
-| SDK | ESP-IDF v5.5.4; commit 735507283d5b2f9fb363a1901172dbd9e847945d; 27 pinned submodules | B1/B2 |
+| PSRAM use | Disabled; CONFIG_SPIRAM unset | E-CONFIG, C1; applies to all baseline resource readings |
+| Crystal | 40 MHz | Hardware identification, E-CONFIG |
+| Flash operation | QIO selected and observed; 40 MHz configured | E-CONFIG, H1 spi_flash log |
+| Boot header | SDK flasher uses DIO initially, bootloader enables QIO; these refer to different stages | E-BUILD/H1 and completion report |
+| CPU / optimization configuration | CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ=160; CONFIG_COMPILER_OPTIMIZATION_DEBUG=y; CONFIG_PM_ENABLE unset | E-CONFIG effective configuration; configuration values, not measured CPU utilization/clock tracing |
+| SDK | ESP-IDF v5.5.4; commit 735507283d5b2f9fb363a1901172dbd9e847945d; 27 pinned submodules | E-BUILD/E-CONFIG |
 | Language / execution | C with FreeRTOS; existing main task plus SDK Wi-Fi/network/event tasks; no custom application task | C1 |
-| Toolchain | GCC 14.2.0, Espressif esp-14.2.0_20260121; Python 3.11.2; CMake 3.30.2; Ninja 1.12.1; esptool v4.12.dev2 | B1 |
+| Toolchain | GCC 14.2.0, Espressif esp-14.2.0_20260121; Python 3.11.2; CMake 3.30.2; Ninja 1.12.1; esptool v4.12.dev2 | E-BUILD |
 | Host / server | Windows NT 10.0.22631.0 x64, PowerShell; Node.js v25.9.0, built-in dgram | Recorded environment |
-| FreeRTOS ticks | CONFIG_FREERTOS_HZ=100 | B2; not a CPU-frequency measurement |
-| Main task stack | CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096 bytes | B2/C1 |
-| Console / port | UART 115200 baud; COM14 | B2/H1 |
-| Partition layout | Single factory app: offset 0x10000, size 0x100000 (1048576 bytes); NVS 0x9000/24K, phy_init 0xf000/4K; partition table 0x8000 | Existing G4 flash/partition evidence; B2/C1 |
-| Wi-Fi buffers | Configured static RX count 10, dynamic RX limit 32, dynamic TX limit 32 | B2; counts are configuration, not observed allocation peaks |
+| FreeRTOS ticks | CONFIG_FREERTOS_HZ=100 | E-CONFIG; not a CPU-frequency measurement |
+| Main task stack | CONFIG_ESP_MAIN_TASK_STACK_SIZE=4096 bytes | E-CONFIG/C1 |
+| Console / port | UART 115200 baud; COM14 | E-CONFIG/H1 |
+| Partition layout | Single factory app: offset 0x10000, size 0x100000 (1048576 bytes); NVS 0x9000/24K, phy_init 0xf000/4K; partition table 0x8000 | Existing G4 flash/partition evidence; E-CONFIG/C1 |
+| Wi-Fi buffers | Configured static RX count 10, dynamic RX limit 32, dynamic TX limit 32 | E-CONFIG; counts are configuration, not observed allocation peaks |
 | UDP configuration | One IPv4 peer 192.168.0.170:56830; at most 20 attempted exchanges; 64-byte receive buffer | C1/H1 |
 | Credentials | Local ignored .private/wifi_credentials.h; case correction supplied by user; values intentionally excluded | H1/C1 |
 | Target security during successful runs | Flash encryption disabled after explicitly approved counter change to 0b011, erase and reflash; Secure Boot disabled; existing permanently disabled JTAG unchanged | H1; no security change made for this documentation task |
@@ -49,30 +49,30 @@ Branch: phase1-udp-baseline. Documentation input commit: 7d865055ed32cb7b09eb245
 
 | Image / artifact | Recorded SHA-256 | Identification / use |
 | --- | --- | --- |
-| B1 G3 application image | 2ce56259093cadec76946ad5d3d5226634e5a894e02618e9209956b1af2e3af5 | 757920 bytes; app metadata c2b2b7a-dirty; selected source for the detailed build-section report, before corrected private network configuration |
+| E-BUILD G3 application image | 2ce56259093cadec76946ad5d3d5226634e5a894e02618e9209956b1af2e3af5 | 757920 bytes; app metadata c2b2b7a-dirty; selected source for the detailed build-section report, before corrected private network configuration |
 | Initial G4 application image | 35f77f2325b7dc54cd395f4f3abae5d9436a0be452ceacae5d38d8eb299ffb88 | 757920 bytes; pre-correction image; initial ROM boot failure then private-network issue; not the R1/R2 image |
 | Final tested R1/R2 application image | 594f9b9ef0d0abc3d5ddc387f263380254bc862c25426ee3539a8334c1f8d762 | 757920 bytes; app metadata c10418f-dirty; corrected private configuration; use this as final runtime baseline image identity |
-| Accepted main.c | f5e306b74759f66a02463ba552afcfe570e09c9e7b45fd7017564486aa6bf7a5 | Same tracked firmware source in B1 and final hardware runs |
-| Retained bootloader | d161ddc1b6a6846cf9bd68d76d27cdd2cb1d70e8a5f48b769dfb6a56024ac76d | 22272 bytes; B1/B2 artifact identity |
-| Effective sdkconfig | 03e46ff2ab04834743ee18e0dd63223202d9a3672f5a1ae2ede63049e8e4a9d2 | Complete non-secret snapshot preserved in B2; private credentials supplied separately |
+| Accepted main.c | f5e306b74759f66a02463ba552afcfe570e09c9e7b45fd7017564486aa6bf7a5 | Same tracked firmware source in E-BUILD and final hardware runs |
+| Retained bootloader | d161ddc1b6a6846cf9bd68d76d27cdd2cb1d70e8a5f48b769dfb6a56024ac76d | 22272 bytes; E-BUILD/E-CONFIG artifact identity |
+| Effective sdkconfig | 03e46ff2ab04834743ee18e0dd63223202d9a3672f5a1ae2ede63049e8e4a9d2 | Complete non-secret snapshot preserved in E-CONFIG; private credentials supplied separately |
 
 Different image hashes are not contradictory measurements: source/build metadata and private inputs identify different images. Exact byte-for-byte reproduction is not established merely by matching source and sdkconfig; credentials, timestamps, app metadata and tool environment must match. Credential-bearing binaries/ELF remain local and untracked. Future comparisons must retain their own image identity, not overwrite these hashes.
 
 ## 2. Flash resource usage — build evidence
 
-B1/L1 values are recorded build measurements. The final R1/R2 binary size is independently preserved in H1, but no separate final-image size-section report is recorded. Do not silently relabel the earlier section totals as measurements of the final image.
+E-BUILD/L1 values are recorded build measurements. The final R1/R2 binary size is independently preserved in H1, but no separate final-image size-section report is recorded. Do not silently relabel the earlier section totals as measurements of the final image.
 
 | Metric / exact size-tool classification | Value | Unit | Provenance / scope |
 | --- | ---: | --- | --- |
 | Final R1/R2 application .bin | 757920 | bytes | H1 final artifact |
-| Bootloader .bin | 22272 | bytes | B1/B2 |
-| Factory application partition | 1048576 (0x100000) | bytes | B1, configured allocation |
-| Unused application partition capacity | 290656 (0x46f60) | bytes | Recorded B1 build fit check; final binary has same recorded length |
+| Bootloader .bin | 22272 | bytes | E-BUILD/E-CONFIG |
+| Factory application partition | 1048576 (0x100000) | bytes | E-BUILD, configured allocation |
+| Unused application partition capacity | 290656 (0x46f60) | bytes | Recorded E-BUILD build fit check; final binary has same recorded length |
 | Free partition percentage, tool rounded | 28 | % | Recorded fit check; not percentage of entire 16 MB flash |
-| Size-tool total image, before binary padding | 757797 | bytes | B1; differs from .bin file length |
-| Flash Code aggregate | 539766 | bytes | B1/L1 |
+| Size-tool total image, before binary padding | 757797 | bytes | E-BUILD; differs from .bin file length |
+| Flash Code aggregate | 539766 | bytes | E-BUILD/L1 |
 | Flash Code .text | 539766 | bytes | L1; child of Flash Code, not additional storage |
-| Flash Data aggregate | 107072 | bytes | B1/L1 |
+| Flash Data aggregate | 107072 | bytes | E-BUILD/L1 |
 | Flash Data .rodata | 106816 | bytes | L1; child of Flash Data |
 | Flash Data .appdesc | 256 | bytes | L1; child of Flash Data |
 
@@ -80,7 +80,7 @@ Application file size, partition allocation and physical flash capacity are dist
 
 ## 3. Static RAM — exact size-tool region classifications
 
-Source B1/L1. These linker-region usage values include code where .text/.vectors are listed; they are not all static variable storage and are not runtime heap readings.
+Source E-BUILD/L1. These linker-region usage values include code where .text/.vectors are listed; they are not all static variable storage and are not runtime heap readings.
 
 | Region / section | Used bytes | Tool-reported used % | Remaining bytes | Region total bytes |
 | --- | ---: | ---: | ---: | ---: |
@@ -97,6 +97,22 @@ Source B1/L1. These linker-region usage values include code where .text/.vectors
 | RTC FAST .rtc_reserved | 24 | 0.29 | — | — |
 
 A dash means no separate section-level remaining/total value was reported, not zero. DIRAM .data + .bss = **35556 bytes (Derived)**, a subtotal already included in DIRAM. No combined IRAM+DIRAM+heap total is calculated: address aliases, linker regions, code/data classifications and runtime allocation pools must not be treated as additive independent capacities. The reported 100% IRAM value applies to the specific 16384-byte linker region, not all chip RAM.
+
+## Requested resource checkpoints — B0–B6
+
+These names reserve a stable measurement schema for future comparisons. The evidence identifiers formerly called B1/B2 are now E-BUILD/E-CONFIG to avoid collision; their recorded values are unchanged. Heap checkpoints use internal 8-bit-capable memory, not total chip RAM. "Not Measured" means the requested checkpoint/scope is unavailable; a nearby reading is not substituted.
+
+| Checkpoint | Definition | R1 | R2 | Unit | Availability / source |
+| --- | --- | --- | --- | --- | --- |
+| B0 | Application build size after a documented clean build | Not Measured | Not Measured | bytes | The retained final .bin is 757920 bytes, but the record does not establish a clean build for that exact image; earlier build/cache interruptions and incremental rebuilds are preserved. This checkpoint is a build-level property, not a per-run runtime reading. No clean build performed for this revision. |
+| B1 | Free internal heap before Wi-Fi initialization | 329724 | 329724 | bytes | Existing startup checkpoint, H1/R1/R2; before network/Wi-Fi setup |
+| B2 | Free internal heap after successful IPv4 acquisition | 278212 | 278200 | bytes | Existing checkpoint before UDP socket creation, H1/R1/R2 |
+| B3 | Free internal heap immediately before the first UDP request/response exchange | Not Measured | Not Measured | bytes | No reading between socket setup and first send; B2 cannot account for allocations during socket setup and is not B3 |
+| B4 | Lowest free internal heap restricted to the UDP exchange campaign | Not Measured | Not Measured | bytes | Existing API minima as of result are R1 275460 and R2 274008, but include earlier startup/Wi-Fi activity. The watermark was not scoped/reset at campaign start, so those readings are not campaign-only B4 values |
+| B5 | Free internal heap after exchanges, immediately before cleanup actions | 277576 | 277576 | bytes | Existing result-stage reading before close/stop/deinit, H1/R1/R2; logs themselves can execute before the first cleanup action |
+| B6 | Minimum free main-task stack observed as of the result checkpoint | 1748 | 1748 | bytes | Existing high-water mark before cleanup, H1/R1/R2; includes main-task history, not an isolated UDP-only stack requirement |
+
+The existing whole-run heap watermark remains documented separately, with its actual scope. Future scope-specific B3/B4 instrumentation and a confirmed clean-build B0 require separate approval; no instrumentation or build is introduced here. Derived stack occupancy remains 2348 bytes for both runs, not a new reading. Future protocols should use the same B0–B6 definitions; unavailable baseline values cannot support numerical subtraction.
 
 ## 4. Runtime heap — two successful hardware runs
 
@@ -130,7 +146,7 @@ The original ROM invalid-header phase never reached application measurement chec
 
 ## 5. Main-task stack
 
-Source B2/C1 for configured size; H1/R1/R2 for readings. The logged uxTaskGetStackHighWaterMark(NULL) values are recorded in bytes under this ESP-IDF baseline.
+Source E-CONFIG/C1 for configured size; H1/R1/R2 for readings. The logged uxTaskGetStackHighWaterMark(NULL) values are recorded in bytes under this ESP-IDF baseline.
 
 | Parameter | R1 bytes | R2 bytes | Type |
 | --- | ---: | ---: | --- |
@@ -176,21 +192,30 @@ R1/R2 pairs retain both observations rather than selecting one as a guarantee. T
 
 | Parameter | Phase 1 Raw UDP | Unit | Measurement Type | Notes |
 | --- | --- | --- | --- | --- |
+| B0 clean-build application size | Not Measured | bytes | Not measured | Known final .bin size is 757920; exact clean-build provenance not established |
+| B1 free internal heap before Wi-Fi | R1 329724; R2 329724 | bytes | Runtime measurement | Same scope as original startup checkpoint |
+| B2 free internal heap after IPv4 | R1 278212; R2 278200 | bytes | Runtime measurement | Before socket creation |
+| B3 free internal heap before first UDP exchange | Not Measured | bytes | Not measured | No post-socket/pre-send checkpoint |
+| B4 campaign-only minimum free internal heap | Not Measured | bytes | Not measured | Whole-run minima below are not scoped to campaign |
+| B5 free internal heap before cleanup | R1 277576; R2 277576 | bytes | Runtime measurement | After exchanges, before teardown |
+| B6 minimum free main-task stack at result | R1 1748; R2 1748 | bytes | Runtime measurement | Watermark includes earlier main-task execution |
+| Linked UDP-core object flash attribution | 3708 | bytes | Existing-artifact analysis | Not incremental cost; see section 11 |
+| Linked UDP-core object static RAM attribution | 6 | bytes | Existing-artifact analysis | Excludes shared and dynamic allocations; not an incremental cost |
 | Physical flash capacity | 16 | MB (as reported) | Recorded specification | Not application allocation |
 | Physical PSRAM capacity | 8 | MB (as reported) | Recorded specification | Physical presence, not an enabled heap pool |
 | PSRAM use | disabled | status | Recorded configuration | Disabled for all baseline measurements |
 | Default CPU clock | 160 | MHz | Recorded configuration | Not a measured clock trace |
 | FreeRTOS tick rate | 100 | Hz | Recorded configuration | Same timing base required for comparison |
 | Application binary, final image | 757920 | bytes | Build measurement | H1 final hash; full firmware, not UDP-only |
-| Bootloader binary | 22272 | bytes | Build measurement | B1/B2 |
+| Bootloader binary | 22272 | bytes | Build measurement | E-BUILD/E-CONFIG |
 | Application partition | 1048576 | bytes | Recorded configuration | 0x100000, 1 MiB |
 | Unused application partition | 290656 | bytes | Build measurement | Recorded fit check; rounded free percentage 28% |
-| Size-tool image before padding | 757797 | bytes | Build measurement | B1 image, not separately remeasured final sections |
-| Flash Code .text | 539766 | bytes | Build measurement | B1/L1 |
+| Size-tool image before padding | 757797 | bytes | Build measurement | E-BUILD image, not separately remeasured final sections |
+| Flash Code .text | 539766 | bytes | Build measurement | E-BUILD/L1 |
 | Flash Data aggregate | 107072 | bytes | Build measurement | Includes .rodata and .appdesc |
 | Flash Data .rodata | 106816 | bytes | Build measurement | Child of aggregate; do not add twice |
 | Flash Data .appdesc | 256 | bytes | Build measurement | Child of aggregate |
-| DIRAM aggregate | 110135 | bytes | Build measurement | B1/L1; includes code/data/bss |
+| DIRAM aggregate | 110135 | bytes | Build measurement | E-BUILD/L1; includes code/data/bss |
 | DIRAM .text | 74579 | bytes | Build measurement | Included in DIRAM |
 | DIRAM .data | 19964 | bytes | Build measurement | Included in DIRAM |
 | DIRAM .bss | 15592 | bytes | Build measurement | Included in DIRAM |
@@ -236,9 +261,9 @@ R1/R2 pairs retain both observations rather than selecting one as a guarantee. T
 ## 9. Limitations, evidence differences and measurement gaps
 
 1. No CPU utilization, isolated protocol processing time, protocol-specific incremental flash/RAM, UDP-attributable heap peak, post-cleanup heap, complete packet size, power or wider statistical/worst-case measurements exist. Missing measurements are not zero. Further instrumentation would require separate approval; none is implemented here.
-2. Size-section rows are explicitly B1/L1, while positive runtime rows are from the later final hash in H1. An exact final-image section report was not recorded. Identical recorded binary lengths do not prove identical section layouts.
-3. Earlier local size output idf_py_stdout_output_31648 reports Flash Code 539758, whereas the selected later records report 539766. Preserve these as different intermediate builds; do not average or substitute the earlier number. This document selects the final-source B1/L1 report and retains the earlier historical evidence unchanged. No conflicting R1/R2 reading was found; expected image/build provenance differences are disclosed.
-4. Original image, pre-correction G4 image and final tested image have different SHA-256 values. Firmware metadata and credentials are private/build inputs; a source commit alone cannot reproduce the exact tested binary. Full effective configuration and hashes are preserved in B2, but binary/ELF and credentials are deliberately not public Git artifacts.
+2. Size-section rows are explicitly E-BUILD/L1, while positive runtime rows are from the later final hash in H1. An exact final-image section report was not recorded. Identical recorded binary lengths do not prove identical section layouts.
+3. Earlier local size output idf_py_stdout_output_31648 reports Flash Code 539758, whereas the selected later records report 539766. Preserve these as different intermediate builds; do not average or substitute the earlier number. This document selects the final-source E-BUILD/L1 report and retains the earlier historical evidence unchanged. No conflicting R1/R2 reading was found; expected image/build provenance differences are disclosed.
+4. Original image, pre-correction G4 image and final tested image have different SHA-256 values. Firmware metadata and credentials are private/build inputs; a source commit alone cannot reproduce the exact tested binary. Full effective configuration and hashes are preserved in E-CONFIG, but binary/ELF and credentials are deliberately not public Git artifacts.
 5. No peak simultaneous whole-chip RAM use or reliable UDP-only allocation peak is derived by adding linker regions, heap observations and task stacks. The 35556-byte data/bss subtotal and 2348-byte stack occupancy are explicitly derived, not new readings.
 6. AP-off tests were intentionally unexecuted. Tick rollover/full 30-second expiry, allocator/unregister/deinit failure paths and SDK constructor assertions lack runtime fault-injection coverage. An association setup failure and prior ROM boot failure are retained; two positive runs do not establish reliability under arbitrary network or resource conditions.
 7. The measurement checkpoint precedes cleanup. Cleanup logs show main returned without cleanup warnings, but they do not measure memory returned afterward. Intentionally stopping Wi-Fi emits disconnect reason=8 after PASS; that is not a failed exchange.
@@ -252,3 +277,47 @@ Match or explicitly document differences in chip/revision, flash/PSRAM configura
 Compare whole application .bin to whole application .bin and matching size-tool sections to matching sections. Such deltas are whole-build deltas unless a controlled experiment isolates protocol changes. They are not automatically the incremental footprint of UDP or CoAP. Do not subtract free heap from unrelated checkpoints or compare an internal-only pool with total/external RAM. A lower free-heap value is not the same sign convention as larger allocated usage; report the free-heap delta explicitly.
 
 For a row marked Not Measured, do not compute a numeric delta. Newly required instrumentation, post-cleanup checkpoints, CPU profiling, packet capture or power measurements are future measurement gaps only and require the project development gates/approval. No inference about preferred long-term architecture is made.
+
+
+## 11. Read-only UDP library attribution — not incremental cost
+
+Question addressed: how much library code, excluding application code, is attributable to UDP in the existing ESP32 image, and how does this inform a future Wi-Fi-already-present Beken trial?
+
+### Artifact and method
+
+Analyzed the retained build/esp32_udp_client.map using the already-installed ESP-IDF size parser, without compiling, linking, flashing or changing configuration:
+
+```text
+python -m esp_idf_size --format json --files build/esp32_udp_client.map
+```
+
+Retained map SHA-256: 0eb32d04f99487624e9757fb7ca0628df67a6ba90a1e5a30392984eef1c94a5c. The neighboring retained ELF matches the previously recorded final ELF hash 3f1a646aade782be38d87432081eeaf14480a33da3d2e6eda39cac9e03527e66. Final .bin identity remains 594f9b9ef0d0abc3d5ddc387f263380254bc862c25426ee3539a8334c1f8d762. This is attribution analysis of an existing artifact, not a new build measurement or a measured Wi-Fi-to-UDP delta. No main.c/application object is counted in the table below.
+
+The parser reports retained linked sections, not the size of the .a archive file on disk. Discarded sections, debug information and unrelated archive members must not be charged as installed UDP code.
+
+### Linked library-object attribution
+
+| Retained library object | .flash.text bytes | .flash.rodata bytes | Initialized .dram0.data bytes | .dram0.bss bytes | Parser flash_total bytes | Parser ram_st_total bytes | Interpretation |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| liblwip.a:udp.c.obj | 3656 | 50 | 2 | 4 | 3708 | 6 | Direct lwIP UDP-core object attribution; excludes callers, shared infrastructure and dynamic socket/control-block buffers |
+| liblwip.a:sockets.c.obj | 9132 | 305 | 0 | 608 | 9437 | 608 | Shared BSD sockets implementation; not exclusively UDP |
+| liblwip.a:api_msg.c.obj | 5353 | 320 | 0 | 0 | 5673 | 0 | Shared network API-message layer; not exclusively UDP |
+| liblwip.a:api_lib.c.obj | 1555 | 83 | 0 | 0 | 1638 | 0 | Shared netconn/API layer; not exclusively UDP |
+
+Zero static section entries mean the parser attributed no bytes to those section classes for that object, not that the API needs no dynamic memory. UDP-core flash_total is 3656 + 50 + 2 = 3708 bytes (approximately 3.62 KiB, Derived); the initialized 2-byte data has both a stored flash initialization image and runtime RAM placement. Static RAM attribution is 2 + 4 = 6 bytes. Do not add that RAM value to flash_total as though it were more flash. There is no UDP-specific dynamic-allocation peak measurement.
+
+Do not sum the four object totals and call the result UDP overhead. IP, pbuf/memp allocation, TCP/IP task, timers, checksums and other dependencies are shared and not isolated by this table. This attribution is neither a proven lower bound nor an upper bound for adding UDP to a different existing image.
+
+### Why it is not the Wi-Fi-only increment
+
+The existing map's archive inclusion list records udp.c.obj being pulled by init.c.obj for udp_init, not solely by app_main. Read-only inspection of the verified SDK's components/lwip/lwip/src/core/ipv4/dhcp.c finds udp_new, udp_bind, udp_recv and udp_sendto_if/src calls. core/init.c also requires LWIP_UDP when LWIP_DHCP is enabled. Thus the present SDK's DHCP/network setup already depends on UDP core functionality, independent of the trial payload exchange.
+
+A Wi-Fi+IP/DHCP firmware may therefore already contain UDP core; adding application UDP can retain only additional entry paths, or may also add socket/API dependencies depending on the existing image. The current artifact alone does not show which additional sections would be retained relative to a Wi-Fi-only reference. Incremental library flash/static RAM remain **Not Measured**, not 3708/6 bytes and not assumed zero.
+
+### Beken comparison boundary
+
+No Beken SDK, Wi-Fi-only Beken ELF/map or UDP-enabled Beken reference image is part of the present evidence. Do not transfer ESP32/Xtensa object sizes to Beken, or assume its stack, socket APIs, configuration or library packaging are identical. If Beken already provides UDP-capable networking, core functionality may be shared; its actual retained-library increment must be established from that target's artifacts.
+
+Without changing source, existing Wi-Fi-only and UDP-enabled ELF/map pairs can be compared if they already exist. Match Beken SDK/compiler/options, compare retained library sections, exclude application objects as requested, and report added/removed/shared code and data separately. This measures a library-level delta, not the complete application-size delta. If only one map is available, it supports inclusion/attribution inspection but not a defensible incremental size figure.
+
+Creating missing comparison builds, changing feature configuration, adding B3/B4 instrumentation or otherwise modifying firmware requires a separate approved task. No such changes/builds were performed here. No architectural selection is made from these ESP32 attributions.
