@@ -79,3 +79,97 @@ Cleanup confirmed: port 56830 reusable
 ## Limitations
 
 Only localhost was tested. Send-error and non-bind runtime-error branches were implemented but not fault-injected. The original automated T07 attempt did not establish Ctrl+C delivery; the subsequent user-reported manual T07 passed. Process/network metadata queries were restricted. No LAN, embedded, CoAP, security or broader reliability conclusions follow. Step 1 source review is accepted; complete Phase 1 milestone acceptance remains pending later work and review.
+
+
+# Phase 1, Step 2 — G3 implementation and build evidence
+
+Date: 2026-11-11, Asia/Calcutta. Branch: phase1-udp-baseline. G1 and final G2 approved before source creation. G3 build authorized; G4 has NOT been authorized or started. Step 1 results above are historical and do not establish Step 2 runtime behavior.
+
+## Build environment and result
+
+Windows NT 10.0.22631.0 x64; ESP-IDF v5.5.4 at C:/Espressif/frameworks/esp-idf-v5.5.4, commit 735507283d5b2f9fb363a1901172dbd9e847945d. Tracked SDK diff remains empty; recursive submodules match pinned revisions. Unrelated pre-existing untracked SDK projects remain untouched. Tools: Python 3.11.2, GCC 14.2.0 (esp-14.2.0_20260121), CMake 3.30.2, Ninja 1.12.1, esptool v4.12.dev2.
+
+The first attempt stalled in compiler-cache subprocesses and was interrupted. The retry disabled ccache. Git ownership checks initially prevented version discovery; resolved using process-local safe.directory entries for this project, the verified SDK and its subdirectories, without global Git or SDK changes. Final reconfiguration/build/size inspection exited 0. No main.c compiler warnings or errors were emitted. Shell activation reported unused older tools; none was removed. No implementation-design deviation was required.
+
+From the firmware project directory, initialize the shell and build:
+
+```powershell
+$env:IDF_TOOLS_PATH = 'C:\Espressif'
+$env:PATH = 'C:\Espressif\python_env\idf5.5_py3.11_env\Scripts;' + $env:PATH
+. C:\Espressif\frameworks\esp-idf-v5.5.4\export.ps1
+idf.py --no-ccache -DIDF_TARGET=esp32s3 reconfigure build size
+```
+
+When running under the sandbox account rather than the installation owner, the build additionally used process-local GIT_CONFIG_COUNT/KEY/VALUE settings for safe.directory: C:/Espressif/frameworks/esp-idf-v5.5.4, C:/Espressif/frameworks/esp-idf-v5.5.4/* and D:/proff/clients/Welmade/CoAP-UDP-Trial. This only establishes trust for those verified local repositories in the build process; no global configuration was written.
+
+The local .private/wifi_credentials.h must contain the two approved string-literal macros. Its actual values and all generated firmware/ELF outputs remain ignored and untracked. CMake checks header presence before component registration. No package installation required.
+
+Effective configuration: esp32s3, 16 MB flash, CONFIG_ESPTOOLPY_FLASHMODE_QIO=y, 40 MHz flash, 40 MHz crystal, PSRAM disabled, 4096-byte main task stack, UART 115200, single factory application partition (1 MiB), FreeRTOS tick rate 100 Hz. The shared Wi-Fi budget is therefore 3000 ticks. ESP-IDF's generated flash command/header uses dio for initial bootloading even with QIO selected; the SDK bootloader upgrades to quad mode. This behavior is explicit in components/esptool_py/Kconfig.projbuild and is not a configuration deviation.
+
+Representative final build output:
+
+```text
+-- App "esp32_udp_client" version: c2b2b7a-dirty
+Successfully created esp32s3 image.
+Bootloader binary size 0x5700 bytes. 0x2900 bytes (32%) free.
+esp32_udp_client.bin binary size 0xb90a0 bytes.
+Smallest app partition is 0x100000 bytes. 0x46f60 bytes (28%) free.
+Project build complete.
+```
+
+The app version describes the pre-commit working tree used for this build; it does not indicate a modified SDK. The source hash below identifies the actual built main.c. A later rebuild after commit may have different app metadata and image hashes.
+
+## Build artifact observations (not runtime measurements)
+
+| Item | Observed value |
+| --- | --- |
+| Application binary | 757920 bytes |
+| Application partition | 1048576 bytes; 290656 bytes free |
+| Bootloader binary | 22272 bytes |
+| Size-tool total image | 757797 bytes before binary padding |
+| DIRAM used | 110135 bytes: text 74579, data 19964, bss 15592 |
+| Flash code | 539766 bytes |
+| Flash data | 107072 bytes |
+| IRAM section used | 16384 bytes in the size-tool reported 16384-byte region |
+| RTC slow / fast | 32 / 24 bytes |
+
+No runtime free-heap, minimum-heap, stack-headroom, Wi-Fi association, UDP timing or exchange-success measurements exist for this firmware yet. No architectural conclusion is drawn from the size report.
+
+SHA-256 evidence for this local build:
+
+| File relative to firmware project | SHA-256 |
+| --- | --- |
+| main/main.c | f5e306b74759f66a02463ba552afcfe570e09c9e7b45fd7017564486aa6bf7a5 |
+| build/esp32_udp_client.bin | 2ce56259093cadec76946ad5d3d5226634e5a894e02618e9209956b1af2e3af5 |
+| build/esp32_udp_client.elf | 4a39c87a5c3ba8d04677e403512f889975dfad4f63997ed2835828c0b245ded2 |
+| build/bootloader/bootloader.bin | d161ddc1b6a6846cf9bd68d76d27cdd2cb1d70e8a5f48b769dfb6a56024ac76d |
+| sdkconfig | 03e46ff2ab04834743ee18e0dd63223202d9a3672f5a1ae2ede63049e8e4a9d2 |
+
+## G3 review status and limitations
+
+Actual firmware has exactly app_main and wifi_event_handler. The callback handles STARTED/READY/FAILED bits; only app_main connects, once after STARTED. Tick subtraction is unsigned and elapsed is checked before remaining-budget subtraction. Attempts increment immediately before send. Exact four-byte PONG plus valid Wi-Fi bits is required for success. Stop on first failure; no retries or custom tasks. Cleanup follows the approved guarded sequence. Full signatures, dependencies, types and ownership are in FUNCTION_REGISTRY.md and VARIABLE_REGISTRY.md.
+
+Existing cloud.js, README.md and SDK source were not modified. No board flashing, reset, serial monitoring or network testing was performed in G3. SDK default-interface creation includes SDK-owned assertion/error-check behavior internally; allocation-failure behavior of that constructor has not been fault-injected. Cleanup failures and all runtime paths remain unverified until approved G4 work. No claim is made that a successful build establishes runtime acceptance.
+
+## Approved G4 plan — deferred, not executed as a G4 suite
+
+The following suite requires a separate explicit G4 authorization. G3 build/packaging inspections above are not reported as G4 PASS results.
+
+| ID | Purpose / input | Expected result | G4 actual / status |
+| --- | --- | --- | --- |
+| S2-T01 | SDK/toolchain inspection | Exact v5.5.4 tracked baseline, pinned submodules and tools recorded | Not executed as G4; deferred |
+| S2-T02 | Build without private header | Configuration error without secret disclosure | Not executed; deferred |
+| S2-T03 | Build with local credentials | Successful ESP32-S3 build; record warnings/effective configuration | G3 build evidence above; G4 suite deferred |
+| S2-T04 | Credential/ignore review | No private values or generated images tracked | G3 packaging review only; G4 suite deferred |
+| S2-T05 | Flash/boot on COM14 | Target starts with expected configuration; no whole-chip erase | Not executed; deferred |
+| S2-T06 | Approved Wi-Fi available | IPv4 obtained within shared 30-second startup/connection budget | Not executed; deferred |
+| S2-T07 | Existing UDP server | attempts=20, successes=20; exact PING/PONG; endpoint correlation | Not executed; deferred |
+| S2-T08 | Server stopped | attempts=1, successes=0; timeout/socket error; no subsequent send | Not executed; deferred |
+| S2-T09 | Temporary peer sends FAIL, PONG+LF or oversized data in separate reset runs | Reject each; attempts=1, successes=0; no retry | Not executed; deferred |
+| S2-T10 | PONG sent from wrong UDP source port | Not accepted; bounded failure; attempts=1, successes=0 | Not executed; deferred |
+| S2-T11 | AP unavailable before boot | Failure/deadline; zero UDP attempts; no application reconnect | Not executed; deferred |
+| S2-T12 | AP disabled during run | Latch FAILED; report actual counts; stop after detected failure | Not executed; deferred |
+| S2-T13 | Completion and manual reset | Record cleanup/heap/stack; reset starts independent run | Not executed; deferred |
+| S2-T14 | Static partial-init cleanup review | Only acquired resources accessed; callback lifetime protected | Not executed as formal G4 review; deferred |
+
+For G4, record each setup, expected result, actual result, PASS/FAIL or not executed, representative logs and observations. Temporary command-line responders only; no permanent test-client file or cloud.js modification authorized. Runtime credential values must be omitted from tracked logs.

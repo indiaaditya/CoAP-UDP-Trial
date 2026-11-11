@@ -1,2 +1,8 @@
 # Microsoft Office temporary lock files
 ~$*
+
+# Local ESP-IDF configuration and credential-bearing build products
+/phase1-udp-baseline/src/esp32-udp-client/.private/
+/phase1-udp-baseline/src/esp32-udp-client/build/
+/phase1-udp-baseline/src/esp32-udp-client/sdkconfig
+/phase1-udp-baseline/src/esp32-udp-client/sdkconfig.old

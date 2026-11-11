@@ -21,3 +21,21 @@ Paths are repository-relative. All listed files are retained; introduced in Phas
 | project-doc/Notings.xlsx | User-maintained project notes workbook; introduced during Step 2 G2 review; retained |
 | project-doc/plantUML/FlowChart/ESP32-UDP Client.png | User-supplied rendering of the proposed Step 2 flowchart; retained; G2 approval pending |
 | .gitignore | Excludes Office temporary lock files; introduced during Step 2 G2 review; retained |
+
+
+## Phase 1, Step 2 — G3 implementation
+
+All paths below are repository-relative. Retained tracked files were introduced in Step 2; existing files are updated in place.
+
+| File | Purpose / retention |
+| --- | --- |
+| phase1-udp-baseline/src/esp32-udp-client/CMakeLists.txt | ESP-IDF project build entry; tracked |
+| phase1-udp-baseline/src/esp32-udp-client/main/CMakeLists.txt | Main component, built-in dependencies, mandatory private credential header; tracked |
+| phase1-udp-baseline/src/esp32-udp-client/main/main.c | Two-function Wi-Fi/UDP firmware; tracked |
+| phase1-udp-baseline/src/esp32-udp-client/sdkconfig.defaults | Non-secret ESP32-S3, flash, console and main-stack defaults; tracked |
+| phase1-udp-baseline/src/esp32-udp-client/.private/wifi_credentials.h | Local credential macros; retained locally, explicitly ignored and never tracked |
+| phase1-udp-baseline/src/esp32-udp-client/sdkconfig | Generated effective non-secret build configuration; local, ignored |
+| phase1-udp-baseline/src/esp32-udp-client/build/ | Generated build outputs and logs, including credential-bearing ELF/binaries; local, ignored; not release artifacts |
+| .gitignore | Extended to exclude private credentials, generated configuration and build output |
+
+Updated FILE_REGISTRY.md, FUNCTION_REGISTRY.md, VARIABLE_REGISTRY.md, PROTOCOL_REGISTRY.md, CHANGE_LOG.md and EXPERIMENT_RESULTS.md, plus project-doc/ARCHITECTURE_DECISIONS.md and project-doc/PHASE_ROADMAP.md. Existing cloud.js, README.md and SDK source are unchanged. Reserved test/ and rls/ still contain only .gitkeep. The user-added diagram remains a historical proposal rendering; final startup/cleanup revisions were approved in the design review before G3.

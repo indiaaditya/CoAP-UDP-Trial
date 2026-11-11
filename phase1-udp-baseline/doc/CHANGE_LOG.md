@@ -23,3 +23,12 @@ Added project-doc/CODEX_DEVELOPMENT_GATES.md from the user-supplied standard and
 ## 2026-11-11 — Synchronize user-added review artifacts
 
 Added user-supplied project-doc/Notings.xlsx and project-doc/plantUML/FlowChart/ESP32-UDP Client.png. Added .gitignore to exclude Office lock files and updated FILE_REGISTRY.md. Workbook ZIP integrity checked; supplied Wi-Fi credential values were not found in workbook XML. Flowchart inspected as a review artifact. No firmware generated, no implementation tests performed, and no G2 approval or milestone acceptance implied.
+
+
+## 2026-11-11 — Phase 1, Step 2 G3 implementation
+
+Implemented the approved nested ESP-IDF project: project/component CMakeLists.txt, main/main.c and sdkconfig.defaults. Extended .gitignore; created the private credential header locally only. Updated all six phase records, ARCHITECTURE_DECISIONS.md and PHASE_ROADMAP.md. Exactly two custom functions: app_main and wifi_event_handler; built-in ESP-IDF/lwIP/FreeRTOS dependencies only. Single app_main connection after STARTED; one shared wrap-safe 30-second deadline; maximum 20 attempted exchanges; exact PING/PONG; stop on first failure; callback-safe conditional event-group deletion and guarded cleanup.
+
+Build/size inspection completed successfully with verified ESP-IDF 5.5.4 and ccache disabled. Application binary 757920 bytes, bootloader 22272 bytes; application fits its 1 MiB factory partition with 28% free. No main.c compiler warnings emitted. Initial cache stall interrupted; process-scoped Git ownership settings fixed version discovery. Old unused-tool notice remains informational. Full evidence and hashes in EXPERIMENT_RESULTS.md. No firmware-design deviations, external dependencies or additional custom functions/tasks introduced.
+
+No G4 tests, flashing, monitoring or network experiments executed. Existing NodeJS server, README and SDK unchanged. Independent G3 review and explicit G4 approval required before testing. No merge, tag or Step 3.
