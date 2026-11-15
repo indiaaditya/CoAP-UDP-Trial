@@ -13,3 +13,8 @@ Step 3 authorizes review/documentation only. No Phase 2 implementation is author
 
 
 The completion report and full non-secret configuration archive are in phase1-udp-baseline/doc/EXPERIMENT_RESULTS.md. The approved final G2 design is consolidated in ARCHITECTURE_DECISIONS.md. S2-T11 and S2-T12 remain unexecuted by user direction; no test rerun was authorized for Step 3. Final acceptance and any annotated phase1-udp-baseline-v1.0 tag require separate explicit user decisions. No tag or merge has been performed.
+
+
+## Phase 2 G3-A update — 2026-11-15
+
+G1/G2 approved including final-ACK/return handling and controlled implementation clarifications. G3-A basic integration candidate implemented in separate phase2-coap-baseline worktree at approved baseline. Official component and Node packages pinned, clean ESP32 build passed, Node syntax/module-load checks passed. Independent G3-A source review pending. No runtime feasibility demonstrated. G3-B full instrumentation, G3-C fixture, G4 deployment/tests remain unauthorized. Future presence/MQTT handover excluded. Original Phase1 working tree/reference untouched.

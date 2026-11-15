@@ -6,3 +6,11 @@
 /phase1-udp-baseline/src/esp32-udp-client/build/
 /phase1-udp-baseline/src/esp32-udp-client/sdkconfig
 /phase1-udp-baseline/src/esp32-udp-client/sdkconfig.old
+
+# Phase 2 managed dependencies and credential-bearing build products
+/phase2-coap-baseline/src/node_modules/
+/phase2-coap-baseline/src/esp32-coap-client/.private/
+/phase2-coap-baseline/src/esp32-coap-client/build*/
+/phase2-coap-baseline/src/esp32-coap-client/sdkconfig
+/phase2-coap-baseline/src/esp32-coap-client/sdkconfig.old
+/phase2-coap-baseline/src/esp32-coap-client/managed_components/

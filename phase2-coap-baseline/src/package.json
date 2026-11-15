@@ -1,0 +1,12 @@
+{
+  "name": "phase2-coap-baseline",
+  "version": "0.1.0",
+  "private": true,
+  "description": "G3-A unsecured CoAP PING/PONG feasibility server",
+  "scripts": {
+    "start": "node cloud.js"
+  },
+  "dependencies": {
+    "coap": "1.6.0"
+  }
+}

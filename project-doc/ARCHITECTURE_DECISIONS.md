@@ -171,3 +171,8 @@ stop
 ### Closure status
 
 Step 3 is a documentation/source/artifact inspection. No new source, SDK changes, device security changes, builds, flashes, erases or hardware tests were performed. Recommend submitting the bounded baseline with disclosed coverage gaps for independent acceptance review; no milestone acceptance, tag, merge or Phase 2 implementation is decided here.
+
+
+## ADR-006 — Approved Phase 2 G2; G3-A candidate (2026-11-15)
+
+User approved official espressif/coap4.3.5~8, Node coap1.6.0, five C functions/four Node callbacks, unsecured CON POST /coap-test exact PING/PONG, library reliability, qualified resource comparison and portability review. Approved final-ACK/callback-return clarifications and G3-A/B/C source-review sequencing. G3-A only authorized; implementation in separate phase2-coap-baseline worktree from ac1fa50d6731fd3f607789862fa28fadd8bf84e4. No custom adapter/upstream patch/task/security/presence/MQTT handover. Actual design/source/build evidence in phase2-coap-baseline/doc/. Await independent G3-A source review. No G3-B/C/G4, commit/push/merge/tag or hardware action. Phase1 branch/directory and user edits preserved.

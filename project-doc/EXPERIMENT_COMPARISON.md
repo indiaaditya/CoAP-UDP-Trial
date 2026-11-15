@@ -19,3 +19,8 @@ Main source unchanged from accepted G3. Final application binary 757920 bytes. O
 ## Step 3 consolidation (2026-11-11)
 
 The completion report, resource table, exact source/image identities and full effective non-secret build configuration are consolidated in phase1-udp-baseline/doc/EXPERIMENT_RESULTS.md. No new experiment or cross-phase result was added during closure. Step 1 observations (21/21 positive localhost responses) and Step 2 observations (40/40 positive hardware responses across two runs) remain distinct; intentional negative tests and association setup failures are not combined into a packet-loss rate. No comparison supports choosing UDP over CoAP or another long-term architecture. Milestone acceptance remains pending independent review and user decision.
+
+
+## Phase 2 G3-A build-only evidence — 2026-11-15
+
+Basic official-component CoAP integration compiles for ESP32-S3/ESP-IDF5.5.4. Application906608 bytes, bootloader22272 bytes, fits existing1MiB partition. Exact identities/configuration/dependencies in phase2-coap-baseline/doc/EXPERIMENT_RESULTS.md. This is build evidence, not runtime CoAP feasibility, packet reliability, hardware resource or Beken evidence. Full attribution/deltas and primary/scoped campaign deferred to G3-B. Historical baseline checkpoint/section provenance limits remain; no new Phase1 measurement or result. No protocol-selection/architecture conclusion.
