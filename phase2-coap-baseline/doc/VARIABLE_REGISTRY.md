@@ -73,7 +73,7 @@ send_ping_request local pdu is coap_pdu_t *, NULL initially; owned until coap_se
 
 ## Node module
 
-coap: module object; COAP_PORT: number, default 56830 or validated TRIAL_COAP_PORT; BIND_ADDRESS: string 0.0.0.0; RESOURCE_PATH: string /coap-test; PING_PAYLOAD/PONG_PAYLOAD: Buffer, four bytes; SERVER_OPTIONS: object (udp4, proxy false, piggybackReplyMs 50, sendAcksForNonConfirmablePackets false, cacheSize 65536); server: package server; server_failed: boolean initially false. Process lifetime. Callback req/res/error are borrowed invocation arguments; no custom persistent device state.
+coap: module object; COAP_PORT: number, default 56830 or validated TRIAL_COAP_PORT; BIND_ADDRESS: string 0.0.0.0; RESOURCE_PATH: string /coap-test; PING_PAYLOAD/PONG_PAYLOAD: Buffer, four bytes; SERVER_OPTIONS: object (udp4, reuseAddr false, proxy false, piggybackReplyMs 50, sendAcksForNonConfirmablePackets true, cacheSize 65536); server: package server; server_failed: boolean initially false. Process lifetime. Callback req/res/error are borrowed invocation arguments; no custom persistent device state.
 
 
 ## G3-B measurement state (no new function or task)
@@ -126,3 +126,7 @@ Routine packet/reply objects, temporary ACK bytes, repeated-request predicates, 
 ## Approved watchdog-only amendment (review candidate)
 
 Only FIXTURE_TIMEOUT_MS changes120000 ->180000. No function/mode/dependency/socket/stimulus timer/state addition. The60-second first-request readiness rule is an operator validity rule in MANUAL_TEST_PROCEDURE.md, not a new variable or fixture behavior. First request late/missing ->setup INVALID/overall BLOCKED, not ESP protocol failure.
+
+## Approved G4-A server-option correction
+
+Based on accepted f7d0f1682d835611f61b658ff2e60b4607ac704d. Only SERVER_OPTIONS changes: explicit reuseAddr=false and sendAcksForNonConfirmablePackets=false -> true. The object remains file-scope, process-lifetime input to coap.createServer; no new variable, callback or persistent state. The latter flag is required by the inspected coap 1.6.0 outgoing-packet send gate to permit piggyback ACK responses; its name must not be interpreted as proof that the server now constructs ACKs for NON requests. Broader package send gating is affected; only the approved CON workload is in scope. Real bind/delivery verification remains pending.

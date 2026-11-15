@@ -114,3 +114,9 @@ G3-B accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607. Approved host fixture
 ## Approved G4 clarification/watchdog amendment
 
 G3-C accepted at7dbe6f2298fbdcbeee34669c097ca55648b22f71. User separately approved only FIXTURE_TIMEOUT_MS120000 ->180000 and documentation/mocked validation; all other source unchanged. First-request<=60s is an operator setup rule, not fixture logic. Physical/loopback successful capture verification is prerequisite; availability and actual capture not yet verified. Exactly one immutable authoritative primary/scoped artifact set selected by member hashes; no silent rebuild substitution. Each run reports fixture validity, ESP actual result, overall PASS/FAIL/BLOCKED, actual packet evidence and resource validity separately. No new test IDs, protocol/security features or G4 execution. Full finalized runbook is MANUAL_TEST_PROCEDURE.md.
+
+## Approved G4-A corrective design amendment (source-only review)
+
+Execution baseline f7d0f1682d835611f61b658ff2e60b4607ac704d. User approved two SERVER_OPTIONS corrections after P2-06/P2-07 source investigation: add reuseAddr=false; change sendAcksForNonConfirmablePackets=false -> true. This supersedes the original ACK-for-NONfalse option description above for the current server; the four callbacks, APIs, packet contents, validation, dependencies and test matrix remain unchanged.
+
+In installed coap 1.6.0 the latter option gates outgoing non-confirmable response packets, including ack=true piggyback replies to CON requests. Its old value suppresses the immediate response path. The new true value allows that path; actual UDP delivery remains unverified. No library fork/adapter, new function, firmware change, source-private API usage or scope expansion. Windows bind exclusivity must also be demonstrated rather than inferred. Real P2-06..08 retesting, commit and push require separate authorization. Four prior passing G4-A results remain valid; no rebuild required.

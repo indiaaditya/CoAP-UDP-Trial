@@ -46,3 +46,7 @@ Updated function/variable/protocol/file registries, approved-design/status/chang
 ## Watchdog-only amendment review inventory
 
 Source: test/coap_fixture.js, exactly one constant changed120000 ->180000. No firmware/server/manifest/lock change. Documentation: MANUAL_TEST_PROCEDURE.md finalized for P2-01..29 with capture prerequisites, authoritative immutable primary/scoped ledgers, first-request60s rule,180s host ceiling and separate outcome fields; relevant function/variable/protocol/design/change/experiment/file records updated. Local generated build/watchdog-amendment-validation.json remains ignored; no persistent harness source or new implementation function.
+
+## G4-A approved server-option correction inventory
+
+Modified src/cloud.js only at SERVER_OPTIONS: add reuseAddr=false; change sendAcksForNonConfirmablePackets=true. No callback, ESP32, fixture, dependency manifest or lockfile change. Supporting updates: FILE_REGISTRY, FUNCTION_REGISTRY, VARIABLE_REGISTRY, PROTOCOL_REGISTRY, G2_DESIGN, CHANGE_LOG, EXPERIMENT_RESULTS and MANUAL_TEST_PROCEDURE. External evidence is under CoAP-G4-Evidence/*-IST-server-options, outside both worktrees; contains reproducible VM mock harness/report and static validation, never production dependencies or committed build outputs. No firmware build or network test accompanies this correction.

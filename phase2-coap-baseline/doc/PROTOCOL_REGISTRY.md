@@ -18,7 +18,7 @@ Expected UDP payload lengths (calculations, not captures): 24-byte request, 14-b
 
 Reject matching wrong code/body/format, Observe and Block1/Block2; reject wrong ACK MID. Wrong token never succeeds. FAIL intentionally results in library RST for CON/NON where supported; ACK responses are not reset. Library parser can reject malformed packets before callback. Libcoap may consume an invalid-token ACK at message layer: no guaranteed recovery from every malformed peer response; no false application success and bounded termination.
 
-Node uses package duplicate cache, piggyback handling and retransmissions, with 65536-byte cache cap, 50 ms piggyback threshold, IPv4, proxy false, ACK-for-NON false. It does not implement faults/delays. Internal excluded features may still exist in the package; no Observe/discovery/blockwise/proxy/multicast/security transactions are intentionally initiated.
+Node uses package duplicate cache, piggyback handling and retransmissions, with 65536-byte cache cap, 50 ms piggyback threshold, IPv4, proxy false, reuseAddr false and sendAcksForNonConfirmablePackets true (approved G4-A correction; see version-specific explanation below). It does not implement faults/delays. Internal excluded features may still exist in the package; no Observe/discovery/blockwise/proxy/multicast/security transactions are intentionally initiated.
 
 Excluded: MQTT, future presence/pending-message/MQTT handover, production heartbeat/adaptive polling, cloud push, certificates, DTLS, OSCORE, registration, ECDH/HKDF/AES-GCM integration, large transfers, Redis, production recovery and generalized transports. No runtime protocol evidence yet.
 
@@ -54,3 +54,11 @@ Unexpected front/backend peers are ignored. Probe wrong token/code/body/format/A
 ## Approved host watchdog amendment - no protocol change
 
 Host fixture safety ceiling180000ms replaces120000ms. Firmware Wi-Fi budget30000ms, application ceiling100000ms, CoAP ACK/retransmission parameters and250ms/500ms fault stimulus timing are unchanged. First device request must be observed within60s of fixture launch; enforce manually as a setup-validity condition, not new source logic. At first request60s,100s application waiting ends around160s with20s host margin;93s waiting ends around153s with27s margin. Late setup/fixture timeout is fixture INVALID/overall BLOCKED; retain ESP result independently. Captured-wire evidence and runtime measurement validity remain separate. No network test performed by this amendment.
+
+## Approved G4-A corrections and historical findings
+
+P2-06 failed: two controlled standard servers both reported listening on UDP 56830. coap 1.6.0 listen() defaults reuseAddr to true, passes it to dgram.createSocket and then binds. Explicit false is the approved correction for controlled exclusive ownership; real Windows rejection still requires verification.
+
+P2-07 remained BLOCKED: the valid probe sent once, the server logged request receipt and a 2.04/PONG response intent, but fixture front_in remained zero until its 180-second watchdog. Installed outgoing_message.js constructs a piggyback response with ack=true/confirmable=false. server.js _finishSendResponse sends only if sendAcksForNonConfirmablePackets===true OR outgoing packet.confirmable. With the historical false setting the immediate ACK response is suppressed before RetrySend/UDP send is invoked. This is a high-confidence source-based explanation, not a captured send or runtime branch trace. Setting true permits that path; it does not alter response flags or prove delivery. No upstream package modification, security or new wire transaction is introduced.
+
+Historical server-pair concurrency is not established as P2-07's cause: the wrapper terminated/waited for the second server before probing, and the authoritative 180-second attempt used a fresh server. No comprehensive endpoint snapshot was retained at every probe instant. P2-06 remains historical FAIL, P2-07/P2-08 BLOCKED; no retroactive PASS. Actual UDP/capture retests require separate authorization.

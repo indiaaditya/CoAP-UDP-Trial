@@ -9,9 +9,10 @@ const PING_PAYLOAD = Buffer.from('PING', 'ascii');
 const PONG_PAYLOAD = Buffer.from('PONG', 'ascii');
 const SERVER_OPTIONS = {
   type: 'udp4',
+  reuseAddr: false,
   proxy: false,
   piggybackReplyMs: 50,
-  sendAcksForNonConfirmablePackets: false,
+  sendAcksForNonConfirmablePackets: true,
   cacheSize: 65536
 };
 let server_failed = false;

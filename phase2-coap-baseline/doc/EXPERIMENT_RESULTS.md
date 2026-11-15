@@ -278,3 +278,47 @@ Long-run models inject first request at virtual60s: blackhole remains active thr
 Manual procedure finalized without expanding P2-01..29. Capture-tool availability and successful physical/loopback capture are required prerequisites, presently NOT VERIFIED. No installation/capture attempted. Read-only artifact hash checks matched both retained G3-B sets; MANUAL_TEST_PROCEDURE.md designates P2-PRIMARY-G3B and P2-SCOPED-G3B with app/ELF/map/bootloader/partition/config hashes. This is immutable selection by identity, not a rebuild, hardware verification or filesystem-permission change. Fresh future verification builds cannot silently replace those selected sets.
 
 Each future run separately reports fixture validity, ESP communication result, overall result, packet evidence and measurement validity. Late first request/setup watchdog ->fixture INVALID/overall BLOCKED, not ESP protocol failure. Valid fault with intended ESP rejection can be overall PASS while ESP communication FAIL. No G4 test, flash, monitor, network process, branch operation, commit or push was executed. Original Phase1 directory/reference/user files preserved. Stop for independent review.
+
+## G4-A historical execution and approved source-only correction
+
+Accepted baseline f7d0f1682d835611f61b658ff2e60b4607ac704d; current correction uncommitted for independent review. Prior real G4-A evidence remains immutable at D:/proff/clients/Welmade/CoAP-G4-Evidence/20261115-172840-IST. All 58 evidence-manifest entries matched during read-only investigation. P2-02, P2-03, P2-04 and P2-05 remain PASS; no clean-build rerun. P2-01 capture readiness BLOCKED; P2-06 historical FAIL; P2-07/P2-08 BLOCKED. No correction retrospectively changes these results.
+
+Historical P2-06: PIDs 23044 and 6316 both reported 0.0.0.0:56830 listening. The installed coap 1.6.0 defaults reuseAddr=true and passes it to Node dgram.createSocket, explaining shared binds. Wrapper terminates/waits for PID 6316 before initial probe; first server logs peer 127.0.0.1:53904. Authoritative fresh-server attempt is associated with PID 8612; valid probe 127.0.0.1:65288 sends 24-byte CON POST/MID42/token8000002a. Server logs request receipt and 2.04/PONG intent, fixture logs no incoming response and expires after approximately 180.135 seconds. Path probe 127.0.0.1:53763 was interrupted; method/payload/format not executed. No captured packets exist. Dedicated logs/process records identify the intended server, but no comprehensive endpoint snapshot exists at every probe instant.
+
+High-confidence P2-07 explanation from installed code: outgoing_message.js constructs ack=true/confirmable=false piggyback replies; server.js _finishSendResponse gates sender.send on sendAcksForNonConfirmablePackets===true or outgoing packet.confirmable. Old false setting suppresses the immediate ACK response. This static branch explains absence of send errors/fixture ingress without claiming runtime branch or network transmission proof. UDP sends, when invoked, complete asynchronously; res.end() and application log are not delivery evidence.
+
+Approved exact source correction: add reuseAddr=false; change sendAcksForNonConfirmablePackets=false -> true. No other server source differences; all four callback bodies/registration tail unchanged. coap pinned/locked/installed at1.6.0. ESP32, fixture, dependency manifests and lockfiles unchanged; all12 authoritative firmware member hashes match. The option name does not precisely express its inspected outgoing-packet gate; true also changes gating outside the current CON-only workload, without changing packet flags or adding a test scope.
+
+Current validation: node --check phase2-coap-baseline/src/cloud.js exits0. VM mocks only coap.createServer/listen, req/res and process/console; no actual coap runtime loaded, sockets, network, timers, device or firmware build. Original14 request cases plus11 option/endpoint/error cases pass25/25:
+
+| Mock check | Result |
+| --- | --- |
+| valid | PASS |
+| path | PASS |
+| method | PASS |
+| payload | PASS |
+| missing-format | PASS |
+| wrong-format | PASS |
+| excluded-Observe | PASS |
+| excluded-Block1 | PASS |
+| excluded-Block2 | PASS |
+| excluded-Q-Block1 | PASS |
+| excluded-Q-Block2 | PASS |
+| excluded-Proxy-Uri | PASS |
+| excluded-Proxy-Scheme | PASS |
+| excluded-OSCORE | PASS |
+| exact approved SERVER_OPTIONS passed to createServer | PASS |
+| default endpoint and callback registrations | PASS |
+| backend override remains56831 | PASS |
+| invalid port rejected-0 | PASS |
+| invalid port rejected-65536 | PASS |
+| invalid port rejected-NaN | PASS |
+| invalid port rejected-56830.5 | PASS |
+| listening success logs endpoint | PASS |
+| listening error delegates failure and closes once | PASS |
+| repeated server errors close once | PASS |
+| response error logs without close or invented success | PASS |
+
+Corrected cloud.js SHA256 cfe6a3c6aaa0f949973cb786bf8a9d54a1c6b73257936b72adec2ab9ad0da5c3. External reproducible harness and JSON report: D:/proff/clients/Welmade/CoAP-G4-Evidence/20261115-220757-IST-server-options/validate-server-options.js and server-mock-validation.json. static-validation.json records exact two-option source equivalence, four unchanged callback bodies, version preservation and12 artifact matches; evidence-sha256.json inventories local evidence. No secrets intentionally copied into evidence. Mocked EADDRINUSE/EACCES and response-error checks verify callback policy only, not actual OS errors or package send/delivery.
+
+Remaining validation requires independent source review followed by separately authorized P2-06 controlled double-bind and P2-07/08 real loopback probes with working packet capture, process/endpoint snapshots and complete logs. Physical passive capture readiness also remains BLOCKED until verified. All five reporting fields remain separate; original failures are historical evidence. No current real retest, software/driver/firewall/config change, hardware access, commit/push. Stop for review.

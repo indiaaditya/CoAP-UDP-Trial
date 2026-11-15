@@ -54,3 +54,7 @@ Synthetic peers are scoped test stimuli, not a second production CoAP implementa
 ## Watchdog-only amendment validation
 
 Accepted G3-C source7dbe6f2298fbdcbeee34669c097ca55648b22f71. Exact11 fixture functions and16 modes unchanged; only constant value120000 ->180000.27 applicable mocked checks passed, including old120s boundary remaining active, timeout at180s,93s/100s observation windows with first arrival60s, unchanged250ms/500ms stimuli, shutdown cancellation and error/capture limits. No live sockets/hardware.60s operator rule adds no callback or timer. See experiment ledger; execution remains unauthorized.
+
+## Approved G4-A correction - callback bodies unchanged
+
+All four Node callbacks (onRequest, onListening, onServerError, onResponseError), their bodies, signatures and registration tail match accepted f7d0f1682d835611f61b658ff2e60b4607ac704d exactly. Only two SERVER_OPTIONS values change; no helper, task or function added. Mocked createServer observes reuseAddr=false/sendAcksForNonConfirmablePackets=true. Existing 14 request-validation cases and 11 option/endpoint/error checks pass (25/25); mocked errors do not prove actual Windows bind rejection or network transmission. Five ESP32 and eleven fixture functions remain untouched.
