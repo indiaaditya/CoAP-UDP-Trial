@@ -136,7 +136,7 @@ Historical G3-B verification before its later commit/push: installed esp-idf-siz
 
 G3-B accepted source/build commit c146cb2353feb5cc467f85968fb9f6546fb1f607. G3-C changes are local/uncommitted; no push authorization. G4 hardware/network testing is not authorized. Standard server and all ESP32 source/instrumentation/configuration/dependency locks remain byte-identical to accepted G3-B; no firmware rebuild or device access.
 
-Implemented test/coap_fixture.js with exactly11 approved named functions, sixteen approved modes, optional bad-payload/probe CASE,256-record cap,120s watchdog, peer validation, named send/error/listen/signal callbacks and idempotent cleanup. No arrow/anonymous callback implementation functions. Scoped synthetic packets are not a general CoAP server/framework. Standard server has no fault-injection flags or modifications.
+Historical G3-C validation at accepted commit7dbe6f2: implemented test/coap_fixture.js with exactly11 approved named functions, sixteen approved modes, optional bad-payload/probe CASE,256-record cap,120s watchdog, peer validation, named send/error/listen/signal callbacks and idempotent cleanup. No arrow/anonymous callback implementation functions. Scoped synthetic packets are not a general CoAP server/framework. Standard server has no fault-injection flags or modifications.
 
 Dependency update, from src:
 
@@ -233,3 +233,48 @@ Local reports contain test names/status and the corrected arithmetic provenance,
 Unexecuted G4 evidence: actual server/proxy socket startup and occupied-port behavior, real UDP source identity and delay accuracy, package duplicate cache/retry behavior, ESP32 PING/PONG/retransmission/ACK/RST/malformed-response handling, final20th separate-CON ACK on wire, packet capture, runtime heap/stack/task measurements and Beken target-specific assessment. All remain pending explicit authorization. No G4 result is inferred from mock checks.
 
 Final G3-C static check: all15 changed/new files remain confined to approved fixture/manifests/records. Eleven exact fixture functions, no extra implementation callbacks. Whole tracked ESP32 tree, standard cloud.js and both existing firmware build variants unchanged. All installed dependency records (versions, integrities, source locations) match accepted G3-B; only root exact devDependency added. Whitespace and syntax checks pass. No private credential literal found in candidate files. Original Phase1 branch/status/workbook/PNG hashes match start of this G3-C task. No commit/push or real socket/network/device operation.
+
+
+## Approved watchdog amendment - host-only validation and finalized G4 procedure
+
+Accepted G3-C source commit7dbe6f2298fbdcbeee34669c097ca55648b22f71; current amendment uncommitted for review. Exact fixture diff is one constant: FIXTURE_TIMEOUT_MS120000 ->180000. Eleven functions, sixteen modes, all other timing constants, dependencies and socket behavior unchanged. ESP32 communication/instrumentation and cloud.js untouched. Historical G3-C49-check results above used120s and remain historical; the CURRENT watchdog expectation and tests use180s.
+
+Syntax: node --check phase2-coap-baseline/test/coap_fixture.js and node --check phase2-coap-baseline/src/cloud.js both exit0. Applicable validation executed from stdin using node:vm/EventEmitter mocked dgram, deterministic virtual clock/timers and actual public coap-packet1.1.1. No real sockets, network, wall-clock wait or hardware.27/27 checks PASS:
+
+| Applicable amendment check | Result |
+| --- | --- |
+| exact one-line fixture source amendment | PASS |
+| exact eleven functions and sixteen modes | PASS |
+| pass startup uses180000ms and operator cleanup | PASS |
+| drop-first-request startup uses180000ms and operator cleanup | PASS |
+| drop-first-response startup uses180000ms and operator cleanup | PASS |
+| duplicate-request startup uses180000ms and operator cleanup | PASS |
+| duplicate-response startup uses180000ms and operator cleanup | PASS |
+| blackhole startup uses180000ms and operator cleanup | PASS |
+| separate startup uses180000ms and operator cleanup | PASS |
+| separate-duplicate startup uses180000ms and operator cleanup | PASS |
+| ack-only startup uses180000ms and operator cleanup | PASS |
+| wrong-token startup uses180000ms and operator cleanup | PASS |
+| wrong-code startup uses180000ms and operator cleanup | PASS |
+| bad-payload startup uses180000ms and operator cleanup | PASS |
+| malformed startup uses180000ms and operator cleanup | PASS |
+| wrong-port startup uses180000ms and operator cleanup | PASS |
+| rst startup uses180000ms and operator cleanup | PASS |
+| probe startup uses180000ms and operator cleanup | PASS |
+| alive at old120s boundary; timeout only at180s | PASS |
+| latest-ready blackhole request has93s retry observation window | PASS |
+| latest-ready ACK-only request has100s application observation window | PASS |
+| separate/duplicate250ms500ms timings and packet identities unchanged | PASS |
+| shutdown cancels pending stimulus and watchdog idempotently | PASS |
+| capture256 bound unaffected | PASS |
+| invalid mode still opens no sockets and fails | PASS |
+| socket error path still closes owned sockets | PASS |
+| request24 response14 and emptyACK4 unchanged | PASS |
+
+Fixture SHA256 b2eb53c73077cacba6974ee241922745898dad95069717f581f2d4a3ec65ebe4. Local ignored validation report src/esp32-coap-client/build/watchdog-amendment-validation.json SHA256 b884bbf413ee82b2fc93e357b1b66fc45cb40d511a88284d76bd317483a38bba; report records exact executed source hash, method, Node version and all check results. No persistent validation implementation file added.
+
+Long-run models inject first request at virtual60s: blackhole remains active through virtual153s (93s observation), ACK-only remains active through160s (100s observation) and179.999s;180s callback fails/cleans up. These test FIXTURE availability only, not actual ESP32 retry/deadline correctness. Separate/duplicate stimuli remain250ms/500ms.60s readiness is explicitly operator-enforced, not a source timer or callback change.
+
+Manual procedure finalized without expanding P2-01..29. Capture-tool availability and successful physical/loopback capture are required prerequisites, presently NOT VERIFIED. No installation/capture attempted. Read-only artifact hash checks matched both retained G3-B sets; MANUAL_TEST_PROCEDURE.md designates P2-PRIMARY-G3B and P2-SCOPED-G3B with app/ELF/map/bootloader/partition/config hashes. This is immutable selection by identity, not a rebuild, hardware verification or filesystem-permission change. Fresh future verification builds cannot silently replace those selected sets.
+
+Each future run separately reports fixture validity, ESP communication result, overall result, packet evidence and measurement validity. Late first request/setup watchdog ->fixture INVALID/overall BLOCKED, not ESP protocol failure. Valid fault with intended ESP rejection can be overall PASS while ESP communication FAIL. No G4 test, flash, monitor, network process, branch operation, commit or push was executed. Original Phase1 directory/reference/user files preserved. Stop for independent review.

@@ -42,10 +42,15 @@ Owner: test/coap_fixture.js. No additional server or ESP32 function. JavaScript 
 | onSendComplete | (error: Error or null, bytes: number) | Socket send callback | Completion log, not delivery proof; probe separate-CON success waits for four-byte ACK send completion; errors fail |
 | onSocketError | (error: Error) | Socket error event | finish(false), close owned sockets |
 | onListening | () with socket this | Socket listening event; address(), codec.generate | Endpoint log; probe sends once when front ready |
-| onTimeout | () | 120000 ms watchdog | finish(false, timeout) |
+| onTimeout | () | 180000 ms host watchdog | finish(false, timeout) |
 | onSignal | () | SIGINT/SIGTERM | finish(true, operator-stop); explicitly not a test PASS |
 | finish | (passed: boolean, reason: string) | Terminal paths | Idempotent; clear watchdog/scheduled timers, remove signal handlers, close sockets, set exit code, final summary; non-benign close errors set exit1 |
 
 Runtime package resolution intentionally uses ../src/node_modules/coap-packet because the approved npm manifest is under src while the fixture is under test. This loads the package public entry point, not coap internals. No new module helper/framework or production server change.
 
 Synthetic peers are scoped test stimuli, not a second production CoAP implementation. In particular, separate modes do not implement a general server retransmission engine; loss tests use the unchanged real Node server via proxy mode at G4. No host socket was opened during G3-C validation.
+
+
+## Watchdog-only amendment validation
+
+Accepted G3-C source7dbe6f2298fbdcbeee34669c097ca55648b22f71. Exact11 fixture functions and16 modes unchanged; only constant value120000 ->180000.27 applicable mocked checks passed, including old120s boundary remaining active, timeout at180s,93s/100s observation windows with first arrival60s, unchanged250ms/500ms stimuli, shutdown cancellation and error/capture limits. No live sockets/hardware.60s operator rule adds no callback or timer. See experiment ledger; execution remains unauthorized.

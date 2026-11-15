@@ -17,3 +17,8 @@ G3-A was separately committed/pushed as aad119d4a980b37e510940e37a85b835a1630717
 ## G3-B acceptance and G3-C host fixture candidate
 
 G3-B committed/pushed and accepted at source/build-review level as c146cb2353feb5cc467f85968fb9f6546fb1f607. Implemented approved host-only fixture and exact coap-packet1.1.1 dev dependency; unchanged production server, firmware and dependency versions. Updated registries/status/evidence and corrected23-to24-byte request arithmetic (no wire/protocol change). Syntax checks passed; VM/mock sockets/timers yielded48/49 initially, the sole erroneous expected-size assertion was corrected and retested, resolving49/49; unchanged-server mock callback checks14/14. No actual socket, network or hardware test. Detailed case ledger in EXPERIMENT_RESULTS.md. No G3-C commit/push authorization; stopped for independent review. G4/merge/tag remain unauthorized.
+
+
+## Approved180-second watchdog amendment and G4 procedure finalization
+
+G3-C accepted at7dbe6f2298fbdcbeee34669c097ca55648b22f71. Changed exactly FIXTURE_TIMEOUT_MS120000 ->180000; no other fixture source/function/mode/dependency/socket/timing change, no server/ESP modification. Updated current validation expectation;27/27 applicable VM mocked checks pass with real public codec and in-memory sockets/timers. Historical120s G3-C validation remains explicitly historical, not relabeled as a180s result. Finalized existing P2-01..29 procedure with60s operator readiness, capture proof prerequisites, immutable authoritative artifact pairs and separate five-field reporting. No capture tool installed/used, no actual socket or hardware, no firmware rebuild/flash, no commit/push/merge/tag. Stopped for independent amendment review.

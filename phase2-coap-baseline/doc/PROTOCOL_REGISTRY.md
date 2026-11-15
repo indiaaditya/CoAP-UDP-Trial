@@ -49,3 +49,8 @@ Approved wire content unchanged. Correct request size is **24 bytes**, not the e
 Synthetic replies use explicit text/plain0 and unchanged token except wrong-token. Repeated identical requests in separate modes get ACK but no fresh scheduled application response/MID. Twenty sequential distinct transactions are supported within capture cap. These simple stimuli do not add general separate-response retransmission to the fixture: real-server retry/cache behavior belongs to proxy-based G4 tests.
 
 Unexpected front/backend peers are ignored. Probe wrong token/code/body/format/ACK MID fails; empty ACK alone never completes. A separate probe CON is acknowledged and success waits for its four-byte ACK send callback (not proof of delivery). Proxy/blackhole operator shutdown is STOPPED, not test PASS. Negative-device outcomes are assessed from device/capture evidence at G4, not fixture exit0. Watchdog/capture/socket/parse errors fail and clean up.
+
+
+## Approved host watchdog amendment - no protocol change
+
+Host fixture safety ceiling180000ms replaces120000ms. Firmware Wi-Fi budget30000ms, application ceiling100000ms, CoAP ACK/retransmission parameters and250ms/500ms fault stimulus timing are unchanged. First device request must be observed within60s of fixture launch; enforce manually as a setup-validity condition, not new source logic. At first request60s,100s application waiting ends around160s with20s host margin;93s waiting ends around153s with27s margin. Late setup/fixture timeout is fixture INVALID/overall BLOCKED; retain ESP result independently. Captured-wire evidence and runtime measurement validity remain separate. No network test performed by this amendment.

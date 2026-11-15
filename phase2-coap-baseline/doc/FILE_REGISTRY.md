@@ -41,3 +41,8 @@ G3-A accepted commit: aad119d4a980b37e510940e37a85b835a1630717. G3-B generated o
 New test/coap_fixture.js: eleven approved host-only functions and sixteen modes, no production server modification. Updated src/package.json and src/package-lock.json: exact direct devDependency coap-packet1.1.1, already installed transitively by coap; all resolved package versions remain unchanged. No extra runtime library/framework.
 
 Updated function/variable/protocol/file registries, approved-design/status/change/experiment/manual/resource records and applicable project-doc records. Local validation JSON reports are ignored under src/esp32-coap-client/build/g3c-validation.json and g3c-server-validation.json; no new persistent test harness source was added. No generated binaries, credential header, device access, G4 run, commit or push.
+
+
+## Watchdog-only amendment review inventory
+
+Source: test/coap_fixture.js, exactly one constant changed120000 ->180000. No firmware/server/manifest/lock change. Documentation: MANUAL_TEST_PROCEDURE.md finalized for P2-01..29 with capture prerequisites, authoritative immutable primary/scoped ledgers, first-request60s rule,180s host ceiling and separate outcome fields; relevant function/variable/protocol/design/change/experiment/file records updated. Local generated build/watchdog-amendment-validation.json remains ignored; no persistent harness source or new implementation function.

@@ -103,9 +103,14 @@ stop
 
 ## Review sequence
 
-G3-A source/build review and explicit acceptance before G3-B. G3-B review before G3-C. G4 separate authorization. No automatic advancement. Deviations require explicit approval. G3-A commit/push was separately authorized and completed as aad119d4a980b37e510940e37a85b835a1630717. G3-B was separately authorized for commit/push and accepted as c146cb2353feb5cc467f85968fb9f6546fb1f607. G3-C changes remain uncommitted for review; no G3-C commit/push authorization.
+G3-A source/build review and explicit acceptance before G3-B. G3-B review before G3-C. G4 separate authorization. No automatic advancement. Deviations require explicit approval. G3-A commit/push was separately authorized and completed as aad119d4a980b37e510940e37a85b835a1630717. G3-B was separately authorized for commit/push and accepted as c146cb2353feb5cc467f85968fb9f6546fb1f607. G3-C was separately committed/pushed and accepted as7dbe6f2298fbdcbeee34669c097ca55648b22f71. The subsequent watchdog amendment remains uncommitted pending review.
 
 
 ## G3-C implementation record
 
 G3-B accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607. Approved host fixture now implemented with exactly main, onFrontMessage, onBackMessage, sendDatagram, sendScheduledDatagram, onSendComplete, onSocketError, onListening, onTimeout, onSignal and finish. Actual contracts/state/modes are in the registries. No new ESP32/server function or runtime communication change. Direct test-only coap-packet1.1.1 pinned; no resolved version change. Usage and mode-specific synthetic limitations recorded in MANUAL_TEST_PROCEDURE.md. Source validated with mock sockets/timers; G4 still unauthorized. Arithmetic request-size prediction corrected23 ->24 without changing packet definition. No design deviation required.
+
+
+## Approved G4 clarification/watchdog amendment
+
+G3-C accepted at7dbe6f2298fbdcbeee34669c097ca55648b22f71. User separately approved only FIXTURE_TIMEOUT_MS120000 ->180000 and documentation/mocked validation; all other source unchanged. First-request<=60s is an operator setup rule, not fixture logic. Physical/loopback successful capture verification is prerequisite; availability and actual capture not yet verified. Exactly one immutable authoritative primary/scoped artifact set selected by member hashes; no silent rebuild substitution. Each run reports fixture validity, ESP actual result, overall PASS/FAIL/BLOCKED, actual packet evidence and resource validity separately. No new test IDs, protocol/security features or G4 execution. Full finalized runbook is MANUAL_TEST_PROCEDURE.md.

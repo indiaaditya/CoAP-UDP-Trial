@@ -105,7 +105,7 @@ All module state is owned by one fixture process and released at finish. No firm
 | FRONT_PORT | const number56830 | Device-facing port; probe target |
 | BACKEND_ADDRESS, BACKEND_PORT | const string127.0.0.1, const number56831 | Isolated real-server backend in proxy modes |
 | SEPARATE_DELAY_MS, DUPLICATE_DELAY_MS | const number250 each | Delayed separate/duplicate stimuli |
-| FIXTURE_TIMEOUT_MS | const number120000 | Bounded run watchdog |
+| FIXTURE_TIMEOUT_MS | const number180000 | Approved amended host run watchdog; firmware transaction timeout remains100000 |
 | MAX_CAPTURED_DATAGRAMS | const number256 | Metadata-record limit; fail closed on limit |
 | mode, payload_case | string or undefined, argv[2]/argv[3] | Validated mode and optional CASE |
 | front, back, wrong_port_socket | dgram.Socket or null, initially null | Owned sockets, closed once; back only proxy modes; wrong_port_socket only wrong-port |
@@ -121,3 +121,8 @@ All module state is owned by one fixture process and released at finish. No firm
 | probe_sent | boolean false | Prevent second probe submission |
 
 Routine packet/reply objects, temporary ACK bytes, repeated-request predicates, option iteration and parsed metadata are invocation-local. Scheduled sends hold copied buffers until bounded timers/finish. Only codec generation/parsing and test fault actions occur; no adaptive policy/security/application task.
+
+
+## Approved watchdog-only amendment (review candidate)
+
+Only FIXTURE_TIMEOUT_MS changes120000 ->180000. No function/mode/dependency/socket/stimulus timer/state addition. The60-second first-request readiness rule is an operator validity rule in MANUAL_TEST_PROCEDURE.md, not a new variable or fixture behavior. First request late/missing ->setup INVALID/overall BLOCKED, not ESP protocol failure.
