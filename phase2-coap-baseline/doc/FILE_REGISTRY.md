@@ -1,6 +1,6 @@
 # Phase 2 file registry — G3-A actual files
 
-All listed files are new under phase2-coap-baseline. Source/build inventory is confined to this worktree. Original phase1-udp-baseline files are retained unchanged. No uncommitted workbook/PNG copied. Generated credential-bearing artifacts are ignored, not release files.
+Listed files were introduced under phase2-coap-baseline in accepted G3-A unless identified below as G3-B additions. Source/build inventory is confined to this worktree. Original phase1-udp-baseline files are retained unchanged. No uncommitted workbook/PNG copied. Generated credential-bearing artifacts are ignored, not release files.
 
 | File (phase-relative) | Responsibility |
 | --- | --- |
@@ -20,6 +20,8 @@ All listed files are new under phase2-coap-baseline. Source/build inventory is c
 | src/esp32-coap-client/sdkconfig.defaults | Complete committed non-secret baseline settings plus CoAP options |
 | src/package-lock.json | Exact resolved npm dependency tree/integrities |
 | src/package.json | Exact coap production dependency; G3-C dev dependency not yet added |
+| src/esp32-coap-client/main/Kconfig.projbuild | G3-B: scoped-monitor bool, default n |
+| src/esp32-coap-client/sdkconfig.scoped.defaults | G3-B: supplemental y override |
 | doc/FILE_REGISTRY.md | This inventory |
 | doc/EXPERIMENT_RESULTS.md | Actual G3-A build, environment and check evidence |
 
@@ -27,4 +29,7 @@ Existing modified files: .gitignore (Phase 2 local/generated exclusions); projec
 
 Local ignored: src/node_modules, src/esp32-coap-client/.private/wifi_credentials.h, sdkconfig, build/, managed_components/. Credentials are present in local firmware outputs; never publish binaries/ELF or private header.
 
-Deferred and absent: main/Kconfig.projbuild, sdkconfig.scoped.defaults and full scoped/measurement implementation (G3-B); test/coap_fixture.js and direct dev coap-packet dependency (G3-C). No extra C/header/custom adapter.
+G3-B now adds src/esp32-coap-client/main/Kconfig.projbuild and src/esp32-coap-client/sdkconfig.scoped.defaults, and modifies main/main.c and sdkconfig.defaults for approved instrumentation. G3-C test/coap_fixture.js and direct dev coap-packet dependency remain absent. No extra C/header/custom adapter.
+
+
+G3-A accepted commit: aad119d4a980b37e510940e37a85b835a1630717. G3-B generated outputs are separate ignored build-primary/ and build-scoped/ directories, each with its own sdkconfig, binary, ELF, map, bootloader, logs and size reports. Retained build/ holds unchanged G3-A artifacts and read-only historical attribution reports. No generated or private file is intended for Git. Current source/build evidence is in RESOURCE_BASELINE.md and EXPERIMENT_RESULTS.md. All existing source/configuration lock dependencies unchanged.

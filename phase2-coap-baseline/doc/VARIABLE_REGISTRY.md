@@ -33,7 +33,7 @@ Constants have static process/boot lifetime. wifi_events starts NULL and is owne
 ## Transaction types and ownership
 
 trial_state_t: TRIAL_IDLE, TRIAL_PENDING, TRIAL_SUCCEEDED, TRIAL_FAILED.
-trial_error_t: TRIAL_ERROR_NONE, BUILD, SEND, NACK, IO, DEADLINE, RESPONSE, WIFI, MEASUREMENT with full TRIAL_ERROR_ prefixes. MEASUREMENT is reserved for approved G3-B; not yet used.
+trial_error_t: TRIAL_ERROR_NONE, BUILD, SEND, NACK, IO, DEADLINE, RESPONSE, WIFI, MEASUREMENT with full TRIAL_ERROR_ prefixes. MEASUREMENT records scoped-monitor errors under G3-B.
 
 | trial_transaction_t field | Exact type | Default / owner |
 | --- | --- | --- |
@@ -69,8 +69,26 @@ transaction is automatic storage in app_main for its entire run. Session borrows
 | wifi_wait_budget, transaction_budget, pacing_budget | const TickType_t each | pdMS_TO_TICKS(30000/100000/1000) |
 | result | esp_err_t | routine SDK return |
 
-send_ping_request local pdu is coap_pdu_t *, NULL initially; owned until coap_send, which consumes even on failure. Callback token is coap_bin_const_t; received PDU/data/options are borrowed. Runtime heap readings are logged directly in G3-A; full measurement storage/count/monitor fields belong to deferred G3-B.
+send_ping_request local pdu is coap_pdu_t *, NULL initially; owned until coap_send, which consumes even on failure. Callback token is coap_bin_const_t; received PDU/data/options are borrowed. G3-B stores reached measurement values before logging; the added state is listed below.
 
 ## Node module
 
 coap: module object; COAP_PORT: number, default 56830 or validated TRIAL_COAP_PORT; BIND_ADDRESS: string 0.0.0.0; RESOURCE_PATH: string /coap-test; PING_PAYLOAD/PONG_PAYLOAD: Buffer, four bytes; SERVER_OPTIONS: object (udp4, proxy false, piggybackReplyMs 50, sendAcksForNonConfirmablePackets false, cacheSize 65536); server: package server; server_failed: boolean initially false. Process lifetime. Callback req/res/error are borrowed invocation arguments; no custom persistent device state.
+
+
+## G3-B measurement state (no new function or task)
+
+All variables are automatic in app_main, initialized to zero/false; no extra persistent protocol state.
+
+| Names | Exact type | Scope / purpose |
+| --- | --- | --- |
+| measurement_failed | bool | Both builds; false, set on scoped monitor error; separate evidence status |
+| heap_b1, heap_b2, heap_b3, heap_b5 | size_t each | Both builds; reached checkpoint values; never publish initialization zero as an unreached reading |
+| main_stack_minimum | UBaseType_t | Both builds; pre-cleanup result-stage high-water mark, bytes |
+| task_count_before_coap, task_count_after_coap | UBaseType_t each | Both builds; snapshots before startup and after session/token initialization; observation, not proof of library task ownership |
+| whole_run_minimum | size_t | Primary only; unreset SDK watermark |
+| scoped_monitor_active | bool | Scoped only; becomes true after start; stop before CoAP cleanup |
+| heap_b4 | size_t | Scoped only; read while monitor active, before stop |
+| heap_before_monitor, heap_after_monitor | size_t each | Scoped only; same pool before/after monitor start; SDK activity included |
+
+CONFIG_TRIAL_SCOPED_HEAP_MONITOR is a Kconfig bool, default n. sdkconfig.scoped.defaults overrides y. No allocated project measurement buffer. SDK monitor itself owns allocated bookkeeping until stop; its allocation failure can assert. No application-owned task or additional callback.

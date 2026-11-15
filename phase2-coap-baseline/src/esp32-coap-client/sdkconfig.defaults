@@ -2476,3 +2476,6 @@ CONFIG_COAP_CLIENT_SUPPORT=y
 # CONFIG_COAP_THREAD_SAFE is not set
 # CONFIG_COAP_DEBUGGING is not set
 CONFIG_COAP_INTERNAL_MEM_ALLOC=y
+
+# Primary build; supplemental defaults explicitly override this choice.
+# CONFIG_TRIAL_SCOPED_HEAP_MONITOR is not set

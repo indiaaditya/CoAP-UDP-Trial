@@ -228,12 +228,28 @@ void app_main(void)
     TickType_t pacing_started_at;
     const TickType_t transaction_budget = pdMS_TO_TICKS(TRANSACTION_TIMEOUT_MS);
     const TickType_t pacing_budget = pdMS_TO_TICKS(EXCHANGE_INTERVAL_MS);
+    bool measurement_failed = false;
+    size_t heap_b1 = 0;
+    size_t heap_b2 = 0;
+    size_t heap_b3 = 0;
+    size_t heap_b5 = 0;
+    UBaseType_t main_stack_minimum = 0;
+    UBaseType_t task_count_before_coap = 0;
+    UBaseType_t task_count_after_coap = 0;
+#ifdef CONFIG_TRIAL_SCOPED_HEAP_MONITOR
+    bool scoped_monitor_active = false;
+    size_t heap_b4 = 0;
+    size_t heap_before_monitor = 0;
+    size_t heap_after_monitor = 0;
+#else
+    size_t whole_run_minimum = 0;
+#endif
     esp_err_t result;
 
     ESP_LOGI(TAG, "ESP32-S3 CoAP trial: peer=%s:%u maximum_attempts=%u",
              SERVER_IPV4, (unsigned int)SERVER_PORT, MAX_EXCHANGE_ATTEMPTS);
-    ESP_LOGI(TAG, "B1 internal heap before Wi-Fi: free=%u bytes",
-             (unsigned int)heap_caps_get_free_size(HEAP_CAPS));
+    heap_b1 = heap_caps_get_free_size(HEAP_CAPS);
+    ESP_LOGI(TAG, "B1 internal heap before Wi-Fi: free=%u bytes", (unsigned int)heap_b1);
 
     result = nvs_flash_init();
     if (result != ESP_OK) {
@@ -351,8 +367,9 @@ void app_main(void)
         ESP_LOGE(TAG, "Wi-Fi IPv4 failure or 30-second timeout");
         goto cleanup;
     }
-    ESP_LOGI(TAG, "B2 internal heap after IPv4: free=%u bytes",
-             (unsigned int)heap_caps_get_free_size(HEAP_CAPS));
+    heap_b2 = heap_caps_get_free_size(HEAP_CAPS);
+    ESP_LOGI(TAG, "B2 internal heap after IPv4: free=%u bytes", (unsigned int)heap_b2);
+    task_count_before_coap = uxTaskGetNumberOfTasks();
 
     coap_startup();
     coap_started = true;
@@ -388,8 +405,25 @@ void app_main(void)
     }
     token_seed[0] = 0x80 | (token_seed[0] & 0x3f);
     coap_session_init_token(session, sizeof(token_seed), token_seed);
-    ESP_LOGI(TAG, "B3 internal heap before first exchange: free=%u bytes",
-             (unsigned int)heap_caps_get_free_size(HEAP_CAPS));
+    task_count_after_coap = uxTaskGetNumberOfTasks();
+    ESP_LOGI(TAG, "Task counts: before_coap=%u after_coap=%u",
+             (unsigned int)task_count_before_coap, (unsigned int)task_count_after_coap);
+#ifdef CONFIG_TRIAL_SCOPED_HEAP_MONITOR
+    heap_before_monitor = heap_caps_get_free_size(HEAP_CAPS);
+    result = heap_caps_monitor_local_minimum_free_size_start();
+    if (result != ESP_OK) {
+        measurement_failed = true;
+        transaction.error = TRIAL_ERROR_MEASUREMENT;
+        ESP_LOGE(TAG, "Scoped heap monitor start failed: %s", esp_err_to_name(result));
+        goto cleanup;
+    }
+    scoped_monitor_active = true;
+    heap_after_monitor = heap_caps_get_free_size(HEAP_CAPS);
+    ESP_LOGI(TAG, "Scoped monitor heap: before=%u after=%u bytes (includes SDK activity)",
+             (unsigned int)heap_before_monitor, (unsigned int)heap_after_monitor);
+#endif
+    heap_b3 = heap_caps_get_free_size(HEAP_CAPS);
+    ESP_LOGI(TAG, "B3 internal heap before first exchange: free=%u bytes", (unsigned int)heap_b3);
 
     while (attempted_exchanges < MAX_EXCHANGE_ATTEMPTS) {
         wifi_bits = xEventGroupGetBits(wifi_events);
@@ -470,12 +504,37 @@ void app_main(void)
     }
 
 cleanup:
+#ifdef CONFIG_TRIAL_SCOPED_HEAP_MONITOR
+    if (scoped_monitor_active) {
+        /* Read before stop restores the SDK whole-run per-region minima.
+           This value includes monitor bookkeeping and campaign logging. */
+        heap_b4 = heap_caps_get_minimum_free_size(HEAP_CAPS);
+        result = heap_caps_monitor_local_minimum_free_size_stop();
+        if (result != ESP_OK) {
+            measurement_failed = true;
+            transaction.error = TRIAL_ERROR_MEASUREMENT;
+            ESP_LOGE(TAG, "Scoped heap monitor stop failed: %s", esp_err_to_name(result));
+        } else {
+            scoped_monitor_active = false;
+        }
+        ESP_LOGI(TAG, "B4 campaign-scoped internal heap minimum=%u bytes", (unsigned int)heap_b4);
+    } else {
+        ESP_LOGI(TAG, "B4 unavailable: campaign monitor was not started");
+    }
+#else
+    whole_run_minimum = heap_caps_get_minimum_free_size(HEAP_CAPS);
+#endif
+    heap_b5 = heap_caps_get_free_size(HEAP_CAPS);
+    main_stack_minimum = uxTaskGetStackHighWaterMark(NULL);
     ESP_LOGI(TAG, "Result: attempts=%u successes=%u status=%s", attempted_exchanges,
              successful_exchanges, successful_exchanges == MAX_EXCHANGE_ATTEMPTS ? "PASS" : "FAIL");
-    ESP_LOGI(TAG, "B5 internal heap free=%u; whole-run minimum=%u; B6 main stack minimum free=%u bytes",
-             (unsigned int)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
-             (unsigned int)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
-             (unsigned int)uxTaskGetStackHighWaterMark(NULL));
+    ESP_LOGI(TAG, "Measurements: status=%s", measurement_failed ? "FAIL" : "OK; see reached checkpoints");
+    ESP_LOGI(TAG, "B5 internal heap free=%u; B6 main stack minimum free=%u bytes",
+             (unsigned int)heap_b5, (unsigned int)main_stack_minimum);
+#ifndef CONFIG_TRIAL_SCOPED_HEAP_MONITOR
+    ESP_LOGI(TAG, "Whole-run internal heap minimum=%u bytes; B4 unavailable in primary build",
+             (unsigned int)whole_run_minimum);
+#endif
     if (session != NULL) {
         coap_session_set_app_data(session, NULL);
         coap_session_release(session);

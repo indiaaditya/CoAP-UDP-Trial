@@ -23,4 +23,11 @@ The completion report, resource table, exact source/image identities and full ef
 
 ## Phase 2 G3-A build-only evidence — 2026-11-15
 
-Basic official-component CoAP integration compiles for ESP32-S3/ESP-IDF5.5.4. Application906608 bytes, bootloader22272 bytes, fits existing1MiB partition. Exact identities/configuration/dependencies in phase2-coap-baseline/doc/EXPERIMENT_RESULTS.md. This is build evidence, not runtime CoAP feasibility, packet reliability, hardware resource or Beken evidence. Full attribution/deltas and primary/scoped campaign deferred to G3-B. Historical baseline checkpoint/section provenance limits remain; no new Phase1 measurement or result. No protocol-selection/architecture conclusion.
+Basic official-component CoAP integration compiles for ESP32-S3/ESP-IDF5.5.4. Application906608 bytes, bootloader22272 bytes, fits existing1MiB partition. Exact identities/configuration/dependencies in phase2-coap-baseline/doc/EXPERIMENT_RESULTS.md. This is build evidence, not runtime CoAP feasibility, packet reliability, hardware resource or Beken evidence. G3-B build attribution and instrumentation are now recorded below; runtime primary/scoped campaigns await G4. Historical baseline checkpoint/section provenance limits remain; no new Phase1 measurement or result. No protocol-selection/architecture conclusion.
+
+
+## Phase 2 G3-B resource/build review candidate
+
+G3-A commit aad119d4a980b37e510940e37a85b835a1630717 accepted at source/build-review level. G3-B resource instrumentation and build evidence authorized; no commit/push approval for G3-B. Separate primary/scoped builds and linker analysis recorded in phase2-coap-baseline/doc/RESOURCE_BASELINE.md. All runtime heap/stack/network evidence remains pending G4. No communication change, new task, dependency, upstream patch, optimization or security feature. Original Phase1 branch/files preserved. G3-C/G4/merge/tag remain unauthorized.
+
+G3-B measured application sizes: primary907040, scoped907984 bytes; supplemental binary increment944, DIRAM initialized-data increment16, BSS unchanged. Accepted G3-A versus historical UDP:+148688 bytes includes CoAP45112 and additional Mbed TLS/crypto/X50958222 archive-loaded bytes plus support/integration/merged-string/alignment effects; backend4769 is a CoAP subset. Complete reconciliation and attribution caveats in RESOURCE_BASELINE.md. None is a measured UDP-to-CoAP runtime heap or Beken figure.

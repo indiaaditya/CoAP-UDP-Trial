@@ -1,6 +1,6 @@
 # Phase 2 function registry — G3-A
 
-G2 approved; only G3-A implemented. No custom tasks or library adapter. All five C functions are in src/esp32-coap-client/main/main.c; all four JS functions are in src/cloud.js. Signatures below are actual definitions (JavaScript parameter contracts are documentation).
+G2 approved; G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717; G3-B instrumentation/build candidate implemented. No custom tasks or library adapter. All five C functions are in src/esp32-coap-client/main/main.c; all four JS functions are in src/cloud.js. Signatures below are actual definitions (JavaScript parameter contracts are documentation).
 
 | Function | Signature | Caller / purpose | Major APIs | Success / failure |
 | --- | --- | --- | --- | --- |
@@ -19,3 +19,10 @@ Framework functions are not custom functions. libcoap owns serialization, socket
 Callback return is separate from application state: FAIL intentionally requests RST for rejected CON/NON; not for ACK responses. Empty ACK does not complete a transaction. Final CON response ACK path executes after callback return and before enclosing coap_io_process returns; cleanup occurs only afterward. ACK transmission/delivery is unverified until G4.
 
 sent can be NULL; callback PDU/data/options are borrowed and not retained. Session app data borrows main's transaction until cleared before release.
+
+
+## G3-B scope update
+
+G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717. All five C signatures and four Node callbacks unchanged. Only app_main adds approved checkpoint storage, task-count snapshots and conditional SDK monitor lifecycle/status. The other four C functions, the exchange/pacing loops, CoAP teardown and Node sources remain unchanged.
+
+Added SDK calls: uxTaskGetNumberOfTasks, heap_caps_monitor_local_minimum_free_size_start/stop. Primary excludes monitor calls at compile time; scoped reads B4 before stop and omits whole-run minimum reporting. On monitor start failure, log measurement failure and stop before sending; on stop failure, label measurement status FAIL and continue guarded resource cleanup. No custom helper added. B1/B2/B3 are logged only when reached; B4 is explicitly unavailable when monitoring was not started; B5/B6 are result-stage pre-CoAP-cleanup readings also on abort, not a fabricated completed campaign.

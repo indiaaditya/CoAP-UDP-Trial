@@ -1,0 +1,9 @@
+menu "CoAP trial measurements"
+    config TRIAL_SCOPED_HEAP_MONITOR
+        bool "Enable supplemental campaign-scoped heap monitoring"
+        default n
+        help
+            Supplemental measurement build only. The SDK monitor allocates
+            bookkeeping memory and resets per-heap minimum counters. Its
+            watermark must not be compared with the primary whole-run value.
+endmenu

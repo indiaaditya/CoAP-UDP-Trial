@@ -1,10 +1,10 @@
 # Approved Phase 2 G2 implementation baseline
 
-Approval provenance: user explicitly approved the complete G2 design and subsequent final-ACK, callback-return and G3 sequencing clarifications. Only G3-A authorized. This checked-in record summarizes that approved contract alongside exact actual registries; it does not replace or broaden the conversation approval.
+Approval provenance: user explicitly approved the complete G2 design and subsequent final-ACK, callback-return and G3 sequencing clarifications. G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717; subsequent G3-B instrumentation/build work authorized. G3-C/G4 remain unauthorized. This checked-in record summarizes that approved contract alongside exact actual registries; it does not replace or broaden the conversation approval.
 
 ## Scope and stage boundary
 
-ESP32-S3/ESP-IDF 5.5.4; official espressif/coap ==4.3.5~8; Node coap ==1.6.0; unicast unsecured UDP; CON POST /coap-test; exact PING/PONG; 20 logical attempts, one pending transaction; standard library recovery. G3-A implements integration, source/config/dependency records, essential heap/stack logs and clean build. G3-B full instrumentation and primary/scoped measurement work, G3-C fixture/dev dependency, and all G4 execution remain unauthorized.
+ESP32-S3/ESP-IDF 5.5.4; official espressif/coap ==4.3.5~8; Node coap ==1.6.0; unicast unsecured UDP; CON POST /coap-test; exact PING/PONG; 20 logical attempts, one pending transaction; standard library recovery. G3-A implements integration, source/config/dependency records, essential heap/stack logs and clean build. G3-B full instrumentation and separate primary/scoped build evidence are now authorized. G3-C fixture/dev dependency and all G4 execution remain unauthorized.
 
 Exactly five C functions and four Node callbacks; actual signatures/callers/APIs/success/failure are in FUNCTION_REGISTRY.md. Variables/types/storage/defaults in VARIABLE_REGISTRY.md. Wire scope in PROTOCOL_REGISTRY.md. No application task, extra helper, adapter or upstream patch. Main owns context/session/transaction; SDK event handler only event bits. Borrowed response pointers are not retained. Unsent PDU deleted locally; coap_send consumes submitted PDU even on failure.
 
@@ -26,7 +26,7 @@ Node production API: createServer(options), request/error events, listen, close,
 
 ## Measurement and testing
 
-RESOURCE_BASELINE.md defines essential implemented checkpoints and deferred full plan, historical missing B0/B3/B4 and earlier-image section provenance. No historical UDP edits/control build. Full section/component attribution, monitor allocation overhead, primary/scoped campaigns and task observations remain G3-B. Test IDs P2-01..29 and execution boundaries are in MANUAL_TEST_PROCEDURE.md; no G4 execution here. Future tests require exact expected/actual results, logs, artifact IDs and capture evidence, including final separate-CON ACK. Communication compilation is not runtime feasibility proof.
+RESOURCE_BASELINE.md defines implemented primary/scoped checkpoints, current build evidence, historical missing B0/B3/B4 and original earlier-image section provenance. No historical UDP edits/control build. G3-B implements instrumentation and section/component build attribution; all runtime primary/scoped campaigns, monitor allocation and task observations await G4. Test IDs P2-01..29 and execution boundaries are in MANUAL_TEST_PROCEDURE.md; no G4 execution here. Future tests require exact expected/actual results, logs, artifact IDs and capture evidence, including final separate-CON ACK. Communication compilation is not runtime feasibility proof.
 
 Beken review maps sockets/I/O wait/ticks/allocator/random/build/task facilities when exact chip/SDK is supplied. No Beken implementation or ESP32-to-Beken size extrapolation. Existing Mbed TLS compatibility is future consideration only. Exclude architecture revisit, presence notification, pending message, MQTT handover, security, production heartbeat/adaptive intervals, push, Observe/discovery/blocks/multicast/proxy, firmware/large transfer, registration, Redis, production recovery and frameworks.
 
@@ -103,4 +103,4 @@ stop
 
 ## Review sequence
 
-G3-A source/build review and explicit acceptance before G3-B. G3-B review before G3-C. G4 separate authorization. No automatic advancement. Deviations require explicit approval. No commit/push/merge/tag requested for G3-A; work remains reviewable in the dedicated worktree.
+G3-A source/build review and explicit acceptance before G3-B. G3-B review before G3-C. G4 separate authorization. No automatic advancement. Deviations require explicit approval. G3-A commit/push was separately authorized and completed as aad119d4a980b37e510940e37a85b835a1630717. G3-B has no commit/push authorization; changes remain reviewable in the dedicated worktree.
