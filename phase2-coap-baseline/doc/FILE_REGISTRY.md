@@ -50,3 +50,7 @@ Source: test/coap_fixture.js, exactly one constant changed120000 ->180000. No fi
 ## G4-A approved server-option correction inventory
 
 Modified src/cloud.js only at SERVER_OPTIONS: add reuseAddr=false; change sendAcksForNonConfirmablePackets=true. No callback, ESP32, fixture, dependency manifest or lockfile change. Supporting updates: FILE_REGISTRY, FUNCTION_REGISTRY, VARIABLE_REGISTRY, PROTOCOL_REGISTRY, G2_DESIGN, CHANGE_LOG, EXPERIMENT_RESULTS and MANUAL_TEST_PROCEDURE. External evidence is under CoAP-G4-Evidence/*-IST-server-options, outside both worktrees; contains reproducible VM mock harness/report and static validation, never production dependencies or committed build outputs. No firmware build or network test accompanies this correction.
+
+## P2-07 fixture validation-only correction inventory
+
+Modified test/coap_fixture.js only in existing probe-mode Content-Format acceptance branch. No source changes to src/cloud.js, ESP32, package manifests/locks or upstream dependencies. Updated FILE/FUNCTION/VARIABLE/PROTOCOL registries, CHANGE_LOG, EXPERIMENT_RESULTS, G2_DESIGN and MANUAL_TEST_PROCEDURE. Temporary reproducible VM mock/static evidence is outside both worktrees under CoAP-G4-Evidence/*-IST-fixture-CF-fix. Historical capture/log/report/manifest retained byte-for-byte; no firmware build or live socket/network test. No commit/push authorization.

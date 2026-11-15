@@ -130,3 +130,7 @@ Only FIXTURE_TIMEOUT_MS changes120000 ->180000. No function/mode/dependency/sock
 ## Approved G4-A server-option correction
 
 Based on accepted f7d0f1682d835611f61b658ff2e60b4607ac704d. Only SERVER_OPTIONS changes: explicit reuseAddr=false and sendAcksForNonConfirmablePackets=false -> true. The object remains file-scope, process-lifetime input to coap.createServer; no new variable, callback or persistent state. The latter flag is required by the inspected coap 1.6.0 outgoing-packet send gate to permit piggyback ACK responses; its name must not be interpreted as proof that the server now constructs ACKs for NON requests. Broader package send gating is affected; only the approved CON workload is in scope. Real bind/delivery verification remains pending.
+
+## P2-07 probe Content-Format validation correction
+
+Existing local boolean content_format in onFrontMessage remains false until a Content-Format option representing numeric0 is found. RFC7252 permits leading-zero uint decoding; option12 is restricted to0..2 bytes. Each encountered value is compared to a same-length zero Buffer after the >2 length rejection. Buffer.alloc temporary is at most2 bytes due short-circuit evaluation; no persistent variable, new timer/state/constant or numeric conversion overflow. Missing option still fails. No packet generation/delay/socket/watchdog variable changes. Semantic format0 is distinct from raw encoding empty/00/0000.

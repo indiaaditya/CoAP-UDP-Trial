@@ -322,3 +322,80 @@ Current validation: node --check phase2-coap-baseline/src/cloud.js exits0. VM mo
 Corrected cloud.js SHA256 cfe6a3c6aaa0f949973cb786bf8a9d54a1c6b73257936b72adec2ab9ad0da5c3. External reproducible harness and JSON report: D:/proff/clients/Welmade/CoAP-G4-Evidence/20261115-220757-IST-server-options/validate-server-options.js and server-mock-validation.json. static-validation.json records exact two-option source equivalence, four unchanged callback bodies, version preservation and12 artifact matches; evidence-sha256.json inventories local evidence. No secrets intentionally copied into evidence. Mocked EADDRINUSE/EACCES and response-error checks verify callback policy only, not actual OS errors or package send/delivery.
 
 Remaining validation requires independent source review followed by separately authorized P2-06 controlled double-bind and P2-07/08 real loopback probes with working packet capture, process/endpoint snapshots and complete logs. Physical passive capture readiness also remains BLOCKED until verified. All five reporting fields remain separate; original failures are historical evidence. No current real retest, software/driver/firewall/config change, hardware access, commit/push. Stop for review.
+
+## P2-07 historical capture finding and approved fixture-only correction
+
+Source parent c3523ef9ac17106a726f43c04998e163fbc1f1bb. Accepted current G4-A: P2-01..06 PASS; P2-07 FAIL (fixture defect); P2-08 BLOCKED/not executed. Earlier historical P2-06 FAIL and accepted rerun remain unchanged. No previously passing build test repeated.
+
+Immutable failed-run evidence: D:/proff/clients/Welmade/CoAP-G4-Evidence/20261115-224413-IST-GateA-inspection/GateB-R2/P2-07-valid/capture.pcapng; SHA25670867aa155303b8804159ca228de8feeb432a22a9ec98f54bc9a5ff85e563045. Retained consolidated report SHA2561407772f4378b90a49958f4f74822c41bfe88fa99315bedba67f801c2500ac5d; retained manifest SHA25675c9a0b5a984d35d8023a147d3a0ea4d4fc932fe1551b26369fca31b80c8cea4. All original manifest entries rehashed successfully without rewriting evidence.
+
+Actual frame1:127.0.0.1:57077 ->56830, CON POST/coap-test/PING,24 CoAP bytes. Frame2:56830 ->57077, ACK/2.04 Changed/exactPONG, MID42/token8000002a four bytes, Content-Format option12 raw00 (one byte), numeric0;15 CoAP bytes. Response arrived approximately10.2333ms later. Fixture exited1 because its old check only accepted option.value.length===0. The message 'missing text/plain content format' was misleading: the option was present. Server transmission and semantic format were captured; no server or firmware change is required by this finding.
+
+RFC7252 Section3.2 (https://www.rfc-editor.org/rfc/rfc7252.html#section-3.2) requires recipient handling of leading-zero uint encodings; Section5.10/Table4 restricts Content-Format to0..2 bytes, Section5.10.3 supplies no default for absence. Empty,00,0000 all mean0; length3 or more violates the option bound regardless of zero value. The correction requires presence, rejects each encountered nonzero or oversized representation through existing finish(false), and accepts numerical0 in permitted lengths. No new helper or packet generation; code/token/MID/body/prohibited-option validation unchanged. Actual response length15 must not be relabeled14;14 is the empty-encoding prediction, not a fixed validation requirement.
+
+Source syntax: node --check phase2-coap-baseline/test/coap_fixture.js exit0. Source equivalence check confirms only that validation branch differs. Eleven named functions,16 modes and180000ms watchdog unchanged; all timing/socket/generation code byte-equivalent outside that branch. Standard server/ESP32/src tree/manifests/lockfiles unchanged; installed/locked coap1.6.0 and coap-packet1.1.1 preserved;12 authoritative artifact hashes match.
+
+Temporary validation outside both worktrees: D:/proff/clients/Welmade/CoAP-G4-Evidence/20261115-225739-IST-fixture-CF-fix. Actual public coap-packet1.1.1 used with VM mocked dgram and in-memory timers; no actual socket, network, wall-clock wait, device or firmware build. Initial mock run40/54:14 startup cases failed because harness default CASE='valid' incorrectly appeared on non-CASE modes. Corrected only the external harness signature; source remained unchanged. Both initial harness/report and corrected R2 retained. Corrected54/54 PASS includes positive and expected-rejection cases (PASS below means the expected accept/reject assertion succeeded):
+
+| Mock check | Result |
+| --- | --- |
+| valid probe accepts numeric0 encoded in0 bytes | PASS |
+| valid probe accepts numeric0 encoded in1 bytes | PASS |
+| valid probe accepts numeric0 encoded in2 bytes | PASS |
+| path probe accepts numeric0 encoded in0 bytes | PASS |
+| path probe accepts numeric0 encoded in1 bytes | PASS |
+| path probe accepts numeric0 encoded in2 bytes | PASS |
+| method probe accepts numeric0 encoded in0 bytes | PASS |
+| method probe accepts numeric0 encoded in1 bytes | PASS |
+| method probe accepts numeric0 encoded in2 bytes | PASS |
+| payload probe accepts numeric0 encoded in0 bytes | PASS |
+| payload probe accepts numeric0 encoded in1 bytes | PASS |
+| payload probe accepts numeric0 encoded in2 bytes | PASS |
+| format probe accepts numeric0 encoded in0 bytes | PASS |
+| format probe accepts numeric0 encoded in1 bytes | PASS |
+| format probe accepts numeric0 encoded in2 bytes | PASS |
+| rejects nonzero Content-Format 01 | PASS |
+| rejects nonzero Content-Format 0001 | PASS |
+| rejects nonzero Content-Format 0100 | PASS |
+| rejects nonzero Content-Format ffff | PASS |
+| rejects absent Content-Format | PASS |
+| rejects oversized3-byte zero representation | PASS |
+| rejects oversized4-byte zero representation | PASS |
+| rejects oversized100-byte zero representation | PASS |
+| rejects truncated malformed response | PASS |
+| preserves rejection of wrong response code | PASS |
+| preserves rejection of wrong token | PASS |
+| preserves rejection of wrong ACK MID | PASS |
+| preserves rejection of wrong payload | PASS |
+| preserves rejection of newline payload | PASS |
+| preserves rejection of oversized payload | PASS |
+| preserves rejection of NON response | PASS |
+| preserves prohibited response option Observe | PASS |
+| preserves prohibited response option Block1 | PASS |
+| preserves prohibited response option Block2 | PASS |
+| empty ACK alone not success; subsequent response accepted | PASS |
+| separate CON ACK path unchanged | PASS |
+| unexpected source port remains ignored | PASS |
+| 180000ms watchdog remains terminal and cleans up | PASS |
+| pass startup and watchdog/cleanup unchanged | PASS |
+| drop-first-request startup and watchdog/cleanup unchanged | PASS |
+| drop-first-response startup and watchdog/cleanup unchanged | PASS |
+| duplicate-request startup and watchdog/cleanup unchanged | PASS |
+| duplicate-response startup and watchdog/cleanup unchanged | PASS |
+| blackhole startup and watchdog/cleanup unchanged | PASS |
+| separate startup and watchdog/cleanup unchanged | PASS |
+| separate-duplicate startup and watchdog/cleanup unchanged | PASS |
+| ack-only startup and watchdog/cleanup unchanged | PASS |
+| wrong-token startup and watchdog/cleanup unchanged | PASS |
+| wrong-code startup and watchdog/cleanup unchanged | PASS |
+| bad-payload startup and watchdog/cleanup unchanged | PASS |
+| malformed startup and watchdog/cleanup unchanged | PASS |
+| wrong-port startup and watchdog/cleanup unchanged | PASS |
+| rst startup and watchdog/cleanup unchanged | PASS |
+| probe startup and watchdog/cleanup unchanged | PASS |
+
+Current fixture SHA256c83806b1e50554ea52167275a25f6fcdcbabf3c88532aee89d3d36f613062d38. static-validation.json records branch-limited diff, exact function/mode inventory and preservation; fixture-CF-mock-results-R2.json plus validate-fixture-CF-R2.js provide reproducible temporary evidence; evidence-sha256.json inventories it. The historical negative probe cases remain NOT EXECUTED on a network: mocks validate their callbacks only.
+
+Fresh P2-07 using reviewed corrected source, real loopback capture and fixture PASS/exit0 is mandatory before recording live PASS or running P2-08. No retrospective PASS from this source correction or mocked validation. No live network/hardware, repository commit/push or G4-B/C authorization. Stop for review.
+
+Pre-commit user-authorized comment addition: adjacent RFC7252 Section3.2 note documents preferred minimal encoding, mandatory leading-zero reception within0..2 bytes, and actual Node coap1.6.0/P2-07 raw00 finding. No further executable change. Syntax/whitespace checks and a fresh54/54 VM mock run pass on commented source SHA25625cf1c1e40ab1d07838119fda9ce5b8e2f723d93d9ff9b52da489f67c02efd0c. Original54/54 reports and historical packet evidence remain unchanged; new temporary evidence is D:/proff/clients/Welmade/CoAP-G4-Evidence/20261115-225739-IST-fixture-CF-fix/comment-validation/fixture-CF-mock-results-R2.json. No live retest or build; P2-07 remains historical FAIL pending fresh execution.

@@ -58,3 +58,7 @@ Accepted G3-C source7dbe6f2298fbdcbeee34669c097ca55648b22f71. Exact11 fixture fu
 ## Approved G4-A correction - callback bodies unchanged
 
 All four Node callbacks (onRequest, onListening, onServerError, onResponseError), their bodies, signatures and registration tail match accepted f7d0f1682d835611f61b658ff2e60b4607ac704d exactly. Only two SERVER_OPTIONS values change; no helper, task or function added. Mocked createServer observes reuseAddr=false/sendAcksForNonConfirmablePackets=true. Existing 14 request-validation cases and 11 option/endpoint/error checks pass (25/25); mocked errors do not prove actual Windows bind rejection or network transmission. Five ESP32 and eleven fixture functions remain untouched.
+
+## Approved P2-07 fixture Content-Format correction
+
+Base c3523ef9ac17106a726f43c04998e163fbc1f1bb. Only onFrontMessage's existing probe-response Content-Format validation changes. Present option must have 0..2 bytes and all bytes zero (numeric text/plain identifier0); empty,00,0000 accepted; absent/nonzero/oversized rejected. Existing error cleanup is reused. No helper/callback/signature added: eleven fixture functions/sixteen modes unchanged, four server and five ESP32 functions untouched. Code/token/MID/payload, prohibited options, source-peer checks and separate-CON ACK completion path unchanged.54/54 corrected mocked checks pass; no real P2-07 rerun yet.

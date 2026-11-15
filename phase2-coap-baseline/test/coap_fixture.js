@@ -132,7 +132,22 @@ function onFrontMessage(message, rinfo) {
       }
       let content_format = false;
       for (const option of packet.options) {
-        if (option.name === 'Content-Format' && option.value.length === 0) content_format = true;
+        // CoAP Content-Format is an unsigned integer option (RFC 7252, Section 3.2).
+        // Numeric value 0 (text/plain) may be encoded as empty, 0x00, or 0x0000.
+        // Although minimal-length encoding is preferred, receivers must accept
+        // leading zeroes within Content-Format's 0..2-byte length constraint.
+        // During G4-A P2-07, NodeJS coap 1.6.0 sent 0x00, which the earlier
+        // length==0 check incorrectly rejected. Validate the numeric meaning
+        // within that constraint, not just the encoded byte length.
+        // Keep this behavior when implementing cloud/device CoAP validation.
+        if (option.name === 'Content-Format') {
+          if (option.value.length > 2 ||
+              !option.value.equals(Buffer.alloc(option.value.length))) {
+            finish(false, 'probe invalid text/plain content format');
+            return;
+          }
+          content_format = true;
+        }
         if (['Observe', 'Block1', 'Block2'].includes(option.name)) {
           finish(false, 'probe unexpected response option');
           return;
