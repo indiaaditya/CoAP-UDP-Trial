@@ -1,6 +1,6 @@
 # Phase 2 resource evidence - G3-B review candidate
 
-G3-A accepted source/build commit: aad119d4a980b37e510940e37a85b835a1630717. Current G3-B changes are uncommitted; no push authorization. G3-C/G4 remain unauthorized. All values in this document are build/linker observations or explicitly identified calculations. No runtime CoAP/heap/stack/network observation has been collected.
+G3-A accepted source/build commit: aad119d4a980b37e510940e37a85b835a1630717. G3-B committed/pushed and accepted at source/build-review level as c146cb2353feb5cc467f85968fb9f6546fb1f607. Current G3-C work is uncommitted and has no push authorization. G3-C fixture implementation authorized; G4 remains unauthorized. All values in this document are build/linker observations or explicitly identified calculations. No runtime CoAP/heap/stack/network observation has been collected.
 
 ## Evidence identities and comparison boundaries
 

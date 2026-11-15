@@ -92,3 +92,32 @@ All variables are automatic in app_main, initialized to zero/false; no extra per
 | heap_before_monitor, heap_after_monitor | size_t each | Scoped only; same pool before/after monitor start; SDK activity included |
 
 CONFIG_TRIAL_SCOPED_HEAP_MONITOR is a Kconfig bool, default n. sdkconfig.scoped.defaults overrides y. No allocated project measurement buffer. SDK monitor itself owns allocated bookkeeping until stop; its allocation failure can assert. No application-owned task or additional callback.
+
+
+## G3-C fixture state - test/coap_fixture.js
+
+All module state is owned by one fixture process and released at finish. No firmware or standard-server state changed.
+
+| Name | Type / initial value | Purpose / ownership |
+| --- | --- | --- |
+| dgram | Node built-in module object | UDP socket factory; mocked for G3-C validation |
+| coapPacket | Public coap-packet module object, version1.1.1 | parse/generate only |
+| FRONT_PORT | const number56830 | Device-facing port; probe target |
+| BACKEND_ADDRESS, BACKEND_PORT | const string127.0.0.1, const number56831 | Isolated real-server backend in proxy modes |
+| SEPARATE_DELAY_MS, DUPLICATE_DELAY_MS | const number250 each | Delayed separate/duplicate stimuli |
+| FIXTURE_TIMEOUT_MS | const number120000 | Bounded run watchdog |
+| MAX_CAPTURED_DATAGRAMS | const number256 | Metadata-record limit; fail closed on limit |
+| mode, payload_case | string or undefined, argv[2]/argv[3] | Validated mode and optional CASE |
+| front, back, wrong_port_socket | dgram.Socket or null, initially null | Owned sockets, closed once; back only proxy modes; wrong_port_socket only wrong-port |
+| client | {address:string, port:number} or null | Locked first parsed front peer for non-probe modes |
+| request_count, response_count | number0 | Front/backend ingress datagrams; not logical transactions/success counts |
+| first_request, first_response | Buffer or null | Proxy: first captured datagram; synthetic: first request/response of the current stimulus transaction, reused for repeated identical request |
+| scheduled_timers | const Set of timer handles, empty | Bounded scheduled sends; cleared on finish; fired handles retained only until bounded run ends |
+| watchdog | timer handle or null | Single run watchdog |
+| ended | boolean false | Idempotent terminal guard |
+| capture | const Array, empty | Bounded metadata only: direction, time, length, MID, token, code, action; no payload dump |
+| probe_request | packet object or null | Single deterministic CON request, MID42, token8000002a, path/method/body/format variation |
+| probe_expected | expectation object or null | Expected code/payload; accepted flag permits completion only after separate-CON ACK send callback |
+| probe_sent | boolean false | Prevent second probe submission |
+
+Routine packet/reply objects, temporary ACK bytes, repeated-request predicates, option iteration and parsed metadata are invocation-local. Scheduled sends hold copied buffers until bounded timers/finish. Only codec generation/parsing and test fault actions occur; no adaptive policy/security/application task.

@@ -17,9 +17,14 @@ The completion report and full non-secret configuration archive are in phase1-ud
 
 ## Phase 2 G3-A update — 2026-11-15
 
-G1/G2 approved including final-ACK/return handling and controlled implementation clarifications. G3-A basic integration candidate implemented in separate phase2-coap-baseline worktree at approved baseline. Official component and Node packages pinned, clean ESP32 build passed, Node syntax/module-load checks passed. Independent G3-A source/build review accepted commit aad119d4a980b37e510940e37a85b835a1630717. No runtime feasibility demonstrated. G3-B instrumentation/build work is now authorized; G3-C fixture and G4 deployment/tests remain unauthorized. Future presence/MQTT handover excluded. Original Phase1 working tree/reference untouched.
+G1/G2 approved including final-ACK/return handling and controlled implementation clarifications. G3-A basic integration candidate implemented in separate phase2-coap-baseline worktree at approved baseline. Official component and Node packages pinned, clean ESP32 build passed, Node syntax/module-load checks passed. Independent G3-A source/build review accepted commit aad119d4a980b37e510940e37a85b835a1630717. No runtime feasibility demonstrated. G3-B instrumentation/build work is now authorized; G3-C fixture implementation authorized; G4 deployment/tests remain unauthorized. Future presence/MQTT handover excluded. Original Phase1 working tree/reference untouched.
 
 
 ## Phase 2 G3-B resource/build review candidate
 
-G3-A commit aad119d4a980b37e510940e37a85b835a1630717 accepted at source/build-review level. G3-B resource instrumentation and build evidence authorized; no commit/push approval for G3-B. Separate primary/scoped builds and linker analysis recorded in phase2-coap-baseline/doc/RESOURCE_BASELINE.md. All runtime heap/stack/network evidence remains pending G4. No communication change, new task, dependency, upstream patch, optimization or security feature. Original Phase1 branch/files preserved. G3-C/G4/merge/tag remain unauthorized.
+G3-A commit aad119d4a980b37e510940e37a85b835a1630717 accepted at source/build-review level. G3-B resource instrumentation/build evidence committed, pushed and accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607. Separate primary/scoped builds and linker analysis recorded in phase2-coap-baseline/doc/RESOURCE_BASELINE.md. All runtime heap/stack/network evidence remains pending G4. No communication change, new task, dependency, upstream patch, optimization or security feature. Original Phase1 branch/files preserved. G3-C implementation authorized; G4/merge/tag remain unauthorized.
+
+
+## Phase2 G3-C host fixture review candidate
+
+G3-B c146cb2353feb5cc467f85968fb9f6546fb1f607 accepted at source/build-review level. G3-C host fixture and coap-packet1.1.1 test dependency implemented; actual registries/evidence in phase2-coap-baseline/doc/. Five firmware functions and production server unchanged. Mock-only fixture validation49/49 resolved (initial size-arithmetic assertion corrected), unchanged-server callback checks14/14; no actual sockets/network/device testing. Request encoding calculation corrected23 to24 bytes; no protocol change. G3-C uncommitted/unpushed pending independent review. G4/merge/tag remain unauthorized. Original Phase1 branch and user-edited workbook/PNG preserved.

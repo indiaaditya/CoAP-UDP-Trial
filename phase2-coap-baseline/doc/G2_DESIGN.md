@@ -1,10 +1,10 @@
 # Approved Phase 2 G2 implementation baseline
 
-Approval provenance: user explicitly approved the complete G2 design and subsequent final-ACK, callback-return and G3 sequencing clarifications. G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717; subsequent G3-B instrumentation/build work authorized. G3-C/G4 remain unauthorized. This checked-in record summarizes that approved contract alongside exact actual registries; it does not replace or broaden the conversation approval.
+Approval provenance: user explicitly approved the complete G2 design and subsequent final-ACK, callback-return and G3 sequencing clarifications. G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717; subsequent G3-B instrumentation/build work authorized. G3-C fixture implementation authorized; G4 remains unauthorized. This checked-in record summarizes that approved contract alongside exact actual registries; it does not replace or broaden the conversation approval.
 
 ## Scope and stage boundary
 
-ESP32-S3/ESP-IDF 5.5.4; official espressif/coap ==4.3.5~8; Node coap ==1.6.0; unicast unsecured UDP; CON POST /coap-test; exact PING/PONG; 20 logical attempts, one pending transaction; standard library recovery. G3-A implements integration, source/config/dependency records, essential heap/stack logs and clean build. G3-B full instrumentation and separate primary/scoped build evidence are now authorized. G3-C fixture/dev dependency and all G4 execution remain unauthorized.
+ESP32-S3/ESP-IDF 5.5.4; official espressif/coap ==4.3.5~8; Node coap ==1.6.0; unicast unsecured UDP; CON POST /coap-test; exact PING/PONG; 20 logical attempts, one pending transaction; standard library recovery. G3-A implements integration, source/config/dependency records, essential heap/stack logs and clean build. G3-B full instrumentation and separate primary/scoped build evidence are now authorized. G3-C fixture/dev dependency implementation authorized; all G4 execution remains unauthorized.
 
 Exactly five C functions and four Node callbacks; actual signatures/callers/APIs/success/failure are in FUNCTION_REGISTRY.md. Variables/types/storage/defaults in VARIABLE_REGISTRY.md. Wire scope in PROTOCOL_REGISTRY.md. No application task, extra helper, adapter or upstream patch. Main owns context/session/transaction; SDK event handler only event bits. Borrowed response pointers are not retained. Unsent PDU deleted locally; coap_send consumes submitted PDU even on failure.
 
@@ -22,7 +22,7 @@ Managed component source unmodified, lockfiles tracked. Main headers: stdint.h, 
 
 Copy committed effective non-secret Phase 1 config into phase-specific defaults and append approved CoAP settings: client on, server/TCP/PSK/PKI/OSCORE/WebSockets/Q-Block/async/thread-safe/debug/Observe persistence off, internal allocation. Proxy gated off. Preserve global Mbed TLS and all pre-existing settings; no DTLS/security session. Configured app stack4096, CPU160, tick100, debug optimization, PSRAM disabled, flash16MB QIO40, single1MiB partition.
 
-Node production API: createServer(options), request/error events, listen, close, public request fields/normalized headers/options (raw options are checked because Buffer-valued options may be absent from normalized headers), response setOption/end/error. Four callbacks only; no source-private package APIs. Port56830 or validated TRIAL_COAP_PORT; udp4/proxyfalse/cache65536/piggyback50ms/ACK-for-NONfalse. Response 2.04/PONG or 4.04 path,4.05 method,4.00 invalid payload/format/excluded options. Upstream package can process some options before application handler; no claim of global removal of its unused features. coap-oscore/cbor are mandatory installed transitive packages, unused. Direct test codec/fixture deferred to G3-C.
+Node production API: createServer(options), request/error events, listen, close, public request fields/normalized headers/options (raw options are checked because Buffer-valued options may be absent from normalized headers), response setOption/end/error. Four callbacks only; no source-private package APIs. Port56830 or validated TRIAL_COAP_PORT; udp4/proxyfalse/cache65536/piggyback50ms/ACK-for-NONfalse. Response 2.04/PONG or 4.04 path,4.05 method,4.00 invalid payload/format/excluded options. Upstream package can process some options before application handler; no claim of global removal of its unused features. coap-oscore/cbor are mandatory installed transitive packages, unused. Direct test codec/fixture are now implemented under G3-C; no live-network execution authorized.
 
 ## Measurement and testing
 
@@ -103,4 +103,9 @@ stop
 
 ## Review sequence
 
-G3-A source/build review and explicit acceptance before G3-B. G3-B review before G3-C. G4 separate authorization. No automatic advancement. Deviations require explicit approval. G3-A commit/push was separately authorized and completed as aad119d4a980b37e510940e37a85b835a1630717. G3-B has no commit/push authorization; changes remain reviewable in the dedicated worktree.
+G3-A source/build review and explicit acceptance before G3-B. G3-B review before G3-C. G4 separate authorization. No automatic advancement. Deviations require explicit approval. G3-A commit/push was separately authorized and completed as aad119d4a980b37e510940e37a85b835a1630717. G3-B was separately authorized for commit/push and accepted as c146cb2353feb5cc467f85968fb9f6546fb1f607. G3-C changes remain uncommitted for review; no G3-C commit/push authorization.
+
+
+## G3-C implementation record
+
+G3-B accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607. Approved host fixture now implemented with exactly main, onFrontMessage, onBackMessage, sendDatagram, sendScheduledDatagram, onSendComplete, onSocketError, onListening, onTimeout, onSignal and finish. Actual contracts/state/modes are in the registries. No new ESP32/server function or runtime communication change. Direct test-only coap-packet1.1.1 pinned; no resolved version change. Usage and mode-specific synthetic limitations recorded in MANUAL_TEST_PROCEDURE.md. Source validated with mock sockets/timers; G4 still unauthorized. Arithmetic request-size prediction corrected23 ->24 without changing packet definition. No design deviation required.

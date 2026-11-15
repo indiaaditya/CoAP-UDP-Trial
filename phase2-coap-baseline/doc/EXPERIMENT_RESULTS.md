@@ -1,10 +1,10 @@
 # Phase 2 G3-A source/build evidence — 2026-11-15
 
-Status: G3-A was committed and pushed as aad119d4a980b37e510940e37a85b835a1630717 and independently accepted at source/build-review level. G3-B instrumentation/build work is authorized; G3-C and G4 remain unauthorized. No hardware CoAP feasibility result, packet exchange, loss test or runtime resource reading is claimed.
+Status: G3-A was committed and pushed as aad119d4a980b37e510940e37a85b835a1630717 and independently accepted at source/build-review level. G3-B accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607; G3-C fixture implementation authorized, G4 remains unauthorized. No hardware CoAP feasibility result, packet exchange, loss test or runtime resource reading is claimed.
 
 ## Git/worktree preservation
 
-New worktree D:/proff/clients/Welmade/CoAP-UDP-Trial-phase2, branch phase2-coap-baseline, approved source baseline ac1fa50d6731fd3f607789862fa28fadd8bf84e4. Created from that exact baseline with git worktree add -b. Initially clean. G3-A implementation is committed/pushed as aad119d4a980b37e510940e37a85b835a1630717; current G3-B work is uncommitted and has no commit/push authorization.
+New worktree D:/proff/clients/Welmade/CoAP-UDP-Trial-phase2, branch phase2-coap-baseline, approved source baseline ac1fa50d6731fd3f607789862fa28fadd8bf84e4. Created from that exact baseline with git worktree add -b. Initially clean. G3-A implementation is committed/pushed as aad119d4a980b37e510940e37a85b835a1630717; G3-B is committed/pushed and accepted as c146cb2353feb5cc467f85968fb9f6546fb1f607; current G3-C work is uncommitted with no commit/push authorization.
 
 Original D:/proff/clients/Welmade/CoAP-UDP-Trial remains phase1-udp-baseline at the same hash, with modified project-doc/Notings.xlsx and untracked project-doc/plantUML/FlowChart/Phase2 ESP32.png. Before/after SHA256: workbook dedd61751b37f14d64d01be8c45d81d555e8ec092b7972b5ef7dbb55e28ff6f8; PNG 213a2495b22a5588ba19fcd0b7dd3156e42fd2eefb37f46740c2b282955f400d. Workbook was open; read-sharing hash used without modifying it. No stash/reset/clean/stage/commit/checkout in original directory; no existing branch reference modified. Worktree registration necessarily uses shared Git metadata. New worktree contains committed workbook, not original uncommitted workbook/PNG.
 
@@ -93,7 +93,7 @@ Compared all normalized CONFIG assignments/unset symbols against committed Phase
 
 Static checks: exactly5 C custom function definitions and4 named Node callbacks; original Wi-Fi callback/setup/cleanup retained; coap_send ownership correct; main waits for coap_io_process return before final-success cleanup; response pointer lifetime limited to callback; config/ignore/secret exclusions inspected; whitespace check clean. Main C source timestamp precedes its compiled object. No upstream modification. Independent G3-A source/build review accepted commit aad119d4a980b37e510940e37a85b835a1630717.
 
-G3-A implements all approved communication functions and essential logs. Full measurement storage/task counts/scoped monitor builds were deferred at G3-A and are implemented under the subsequent G3-B authorization. Node fault fixture/dev dependency absent. Runtime PING/PONG, reliability, final ACK on wire, stack sufficiency, cleanup behavior, Node error branches and Beken compatibility are Not Verified. No G4 functional tests, network server or device access. Compilation alone is not demonstrated CoAP feasibility.
+G3-A implements all approved communication functions and essential logs. Full measurement storage/task counts/scoped monitor builds were deferred at G3-A and are implemented under the subsequent G3-B authorization. Node fault fixture/dev dependency were absent at G3-A/B and are now implemented under G3-C. Runtime PING/PONG, reliability, final ACK on wire, stack sufficiency, cleanup behavior, Node error branches and Beken compatibility are Not Verified. No G4 functional tests, network server or device access. Compilation alone is not demonstrated CoAP feasibility.
 
 Design deviations: none requiring altered functionality, functions, dependencies or feature settings. Staged deferrals are explicitly authorized G3-A boundaries. Full G2 and clarifications retained through G2_DESIGN.md and actual registries.
 
@@ -102,7 +102,7 @@ Final static verification: exact Wi-Fi callback and guarded cleanup byte-for-byt
 
 ## G3-B separate clean builds and size analysis
 
-G3-A was accepted at aad119d4a980b37e510940e37a85b835a1630717. Current source changes remain uncommitted/unpushed for review. Only app_main measurement operations/state plus the approved Kconfig/defaults arrangement changed; other four custom functions, whole campaign/pacing loop and CoAP/Wi-Fi teardown are text-identical to the accepted source. Node server/manifests/locks unchanged. No application task, abstraction, upstream change or security/protocol expansion.
+G3-A was accepted at aad119d4a980b37e510940e37a85b835a1630717. G3-B changes were subsequently committed/pushed and accepted as c146cb2353feb5cc467f85968fb9f6546fb1f607. Current G3-C changes remain uncommitted for review. Only app_main measurement operations/state plus the approved Kconfig/defaults arrangement changed; other four custom functions, whole campaign/pacing loop and CoAP/Wi-Fi teardown are text-identical to the accepted source. Node server/manifests/locks unchanged. No application task, abstraction, upstream change or security/protocol expansion.
 
 Both output directories were verified absent before the following invocation, then built from scratch. Existing IDF export and process-local safe.directory settings as in G3-A. No build deletion/Phase1 rebuild. Commands from phase2-coap-baseline/src/esp32-coap-client:
 
@@ -129,4 +129,107 @@ G3-B source instrumentation: stored B1/B2/B3/B5/B6 and primary whole-run minima;
 
 All runtime heap/stack/task/network values remain Not Measured. P2-03/04 build and P2-05 configuration/static evidence only; no P2-26/27 runtime campaign, no G3-C fixture, no G4 hardware or network access. No speculative optimization. Await independent G3-B source/build review and separate commit/push permission.
 
-Final G3-B verification: installed esp-idf-size1.7.1 used for both parser interfaces; five custom C functions remain. Source/configuration lock comparison shows only the new measurement flag. Neither Node source nor dependency lockfiles changed. Source predates compiled main object in both variants; -Og retained. No warning/error matched in either saved build log. All source/record candidates checked for private credential literals; no generated/private paths intended for tracking. Original Phase1 branch/status/workbook/PNG hashes remain unchanged. No commit/push performed.
+Historical G3-B verification before its later commit/push: installed esp-idf-size1.7.1 used for both parser interfaces; five custom C functions remain. Source/configuration lock comparison shows only the new measurement flag. Neither Node source nor dependency lockfiles changed. Source predates compiled main object in both variants; -Og retained. No warning/error matched in either saved build log. All source/record candidates checked for private credential literals; no generated/private paths intended for tracking. Original Phase1 branch/status/workbook/PNG hashes remain unchanged. No commit/push performed.
+
+
+## G3-C host fixture implementation and non-network validation
+
+G3-B accepted source/build commit c146cb2353feb5cc467f85968fb9f6546fb1f607. G3-C changes are local/uncommitted; no push authorization. G4 hardware/network testing is not authorized. Standard server and all ESP32 source/instrumentation/configuration/dependency locks remain byte-identical to accepted G3-B; no firmware rebuild or device access.
+
+Implemented test/coap_fixture.js with exactly11 approved named functions, sixteen approved modes, optional bad-payload/probe CASE,256-record cap,120s watchdog, peer validation, named send/error/listen/signal callbacks and idempotent cleanup. No arrow/anonymous callback implementation functions. Scoped synthetic packets are not a general CoAP server/framework. Standard server has no fault-injection flags or modifications.
+
+Dependency update, from src:
+
+```text
+npm install --package-lock-only --ignore-scripts --no-audit --no-fund --offline
+node --check ../test/coap_fixture.js
+node --check cloud.js
+npm ls coap coap-packet
+```
+
+All commands exit0. coap1.6.0 unchanged; direct test-only coap-packet1.1.1 shares the existing production transitive installation. Lock diff changes root devDependencies only; all25 resolved versions/integrities unchanged. No network install, new package/framework or runtime source changes.
+
+Validation harness executed from stdin using node:vm, mocked dgram socket EventEmitters, deterministic in-memory timers, Buffer and the actual installed public coap-packet1.1.1 codec. No real socket was opened, no packet transmitted, no sleep/real120s timer elapsed, and no server/ESP32 network process was started. The ephemeral validation harness is not another repository implementation file. The source under review retains only the approved11 fixture functions.
+
+Initial fixture harness result:48/49 passed. The sole failure was an erroneous expected request size23 in the validation assertion, inherited from the earlier design arithmetic. Actual codec output was24. Targeted corrected assertion passed (request24,response14), with no fixture/protocol/source change. The ledger retains the initial failure and its resolution. Resolved fixture checks49/49; unchanged-server mocked application callback checks14/14. This is not a claim of live interoperability, OS UDP timing, real package server reliability or ESP32 acceptance.
+
+| Fixture check (resolved; initial size assertion correction noted above) | Result |
+| --- | --- |
+| public codec request/response lengths | PASS |
+| proxy pass | PASS |
+| proxy drop-first-request | PASS |
+| proxy drop-first-response | PASS |
+| proxy duplicate-request | PASS |
+| proxy duplicate-response | PASS |
+| proxy preserves client control ACK forwarding | PASS |
+| proxy ignores unexpected backend/front peers | PASS |
+| blackhole suppresses all five identical requests | PASS |
+| ACK-only is empty four-byte matching ACK | PASS |
+| separate response timing/correlation/ACK handling | PASS |
+| separate-duplicate response timing/correlation/ACK handling | PASS |
+| separate MID wrap and repeated-request suppression | PASS |
+| separate supports 20 distinct sequential transactions within capture bound | PASS |
+| wrong-token modifies only correlation token | PASS |
+| wrong-code is matching-token 4.00 | PASS |
+| bad-payload FAIL | PASS |
+| bad-payload LF | PASS |
+| bad-payload OVERSIZE | PASS |
+| malformed truncated header precedes valid response at 250ms | PASS |
+| wrong-port uses distinct bound socket | PASS |
+| RST is empty matching-MID reset | PASS |
+| probe valid request/response | PASS |
+| probe path request/response | PASS |
+| probe method request/response | PASS |
+| probe payload request/response | PASS |
+| probe format request/response | PASS |
+| probe empty ACK does not complete; separate response ACK send precedes finish | PASS |
+| probe rejects bad token | PASS |
+| probe rejects bad code | PASS |
+| probe rejects bad payload | PASS |
+| probe rejects bad format | PASS |
+| probe rejects bad mid | PASS |
+| invalid CLI [null] | PASS |
+| invalid CLI ["unknown"] | PASS |
+| invalid CLI ["pass","extra"] | PASS |
+| invalid CLI ["bad-payload","bad"] | PASS |
+| invalid CLI ["probe","bad"] | PASS |
+| watchdog stops at 120s, not before | PASS |
+| pending delayed sends cancelled on shutdown and finish idempotent | PASS |
+| capture limit bounded | PASS |
+| unexpected malformed client input fails safely | PASS |
+| invalid synthetic request fails safely | PASS |
+| socket error closes all sockets once | PASS |
+| synchronous send error stops safely | PASS |
+| asynchronous send error stops safely | PASS |
+| bind throw stops startup safely | PASS |
+| close error records failure | PASS |
+| fixture function allowlist | PASS |
+
+| Unchanged server application callback (mock package; no network) | Result |
+| --- | --- |
+| valid | PASS |
+| path | PASS |
+| method | PASS |
+| payload | PASS |
+| missing-format | PASS |
+| wrong-format | PASS |
+| excluded-Observe | PASS |
+| excluded-Block1 | PASS |
+| excluded-Block2 | PASS |
+| excluded-Q-Block1 | PASS |
+| excluded-Q-Block2 | PASS |
+| excluded-Proxy-Uri | PASS |
+| excluded-Proxy-Scheme | PASS |
+| excluded-OSCORE | PASS |
+
+Validation source/evidence SHA256:
+
+- fixture: a3aa592c62d97095142939540f23954cee486afe9a755bd1420eecdf87e51048
+- fixture validation JSON: 359bdb15aae935ce8d6a273feea2d587d1aa0384442b788d9200af8bc5973c30
+- server callback validation JSON: eeef85ac2d996ae31f82af3ce97e1bfa11656cf993b0b6f371682426152c8e89
+
+Local reports contain test names/status and the corrected arithmetic provenance, not packet captures. Excluded from Git by existing build-directory rule. Existing primary/scoped firmware artifacts preserved.
+
+Unexecuted G4 evidence: actual server/proxy socket startup and occupied-port behavior, real UDP source identity and delay accuracy, package duplicate cache/retry behavior, ESP32 PING/PONG/retransmission/ACK/RST/malformed-response handling, final20th separate-CON ACK on wire, packet capture, runtime heap/stack/task measurements and Beken target-specific assessment. All remain pending explicit authorization. No G4 result is inferred from mock checks.
+
+Final G3-C static check: all15 changed/new files remain confined to approved fixture/manifests/records. Eleven exact fixture functions, no extra implementation callbacks. Whole tracked ESP32 tree, standard cloud.js and both existing firmware build variants unchanged. All installed dependency records (versions, integrities, source locations) match accepted G3-B; only root exact devDependency added. Whitespace and syntax checks pass. No private credential literal found in candidate files. Original Phase1 branch/status/workbook/PNG hashes match start of this G3-C task. No commit/push or real socket/network/device operation.

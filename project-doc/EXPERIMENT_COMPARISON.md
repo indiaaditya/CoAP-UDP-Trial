@@ -28,6 +28,11 @@ Basic official-component CoAP integration compiles for ESP32-S3/ESP-IDF5.5.4. Ap
 
 ## Phase 2 G3-B resource/build review candidate
 
-G3-A commit aad119d4a980b37e510940e37a85b835a1630717 accepted at source/build-review level. G3-B resource instrumentation and build evidence authorized; no commit/push approval for G3-B. Separate primary/scoped builds and linker analysis recorded in phase2-coap-baseline/doc/RESOURCE_BASELINE.md. All runtime heap/stack/network evidence remains pending G4. No communication change, new task, dependency, upstream patch, optimization or security feature. Original Phase1 branch/files preserved. G3-C/G4/merge/tag remain unauthorized.
+G3-A commit aad119d4a980b37e510940e37a85b835a1630717 accepted at source/build-review level. G3-B resource instrumentation/build evidence committed, pushed and accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607. Separate primary/scoped builds and linker analysis recorded in phase2-coap-baseline/doc/RESOURCE_BASELINE.md. All runtime heap/stack/network evidence remains pending G4. No communication change, new task, dependency, upstream patch, optimization or security feature. Original Phase1 branch/files preserved. G3-C implementation authorized; G4/merge/tag remain unauthorized.
 
 G3-B measured application sizes: primary907040, scoped907984 bytes; supplemental binary increment944, DIRAM initialized-data increment16, BSS unchanged. Accepted G3-A versus historical UDP:+148688 bytes includes CoAP45112 and additional Mbed TLS/crypto/X50958222 archive-loaded bytes plus support/integration/merged-string/alignment effects; backend4769 is a CoAP subset. Complete reconciliation and attribution caveats in RESOURCE_BASELINE.md. None is a measured UDP-to-CoAP runtime heap or Beken figure.
+
+
+## Phase2 G3-C host fixture review candidate
+
+G3-B c146cb2353feb5cc467f85968fb9f6546fb1f607 accepted at source/build-review level. G3-C host fixture and coap-packet1.1.1 test dependency implemented; actual registries/evidence in phase2-coap-baseline/doc/. Five firmware functions and production server unchanged. Mock-only fixture validation49/49 resolved (initial size-arithmetic assertion corrected), unchanged-server callback checks14/14; no actual sockets/network/device testing. Request encoding calculation corrected23 to24 bytes; no protocol change. G3-C uncommitted/unpushed pending independent review. G4/merge/tag remain unauthorized. Original Phase1 branch and user-edited workbook/PNG preserved.

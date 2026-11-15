@@ -1,6 +1,6 @@
 # Phase 2 function registry — G3-A
 
-G2 approved; G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717; G3-B instrumentation/build candidate implemented. No custom tasks or library adapter. All five C functions are in src/esp32-coap-client/main/main.c; all four JS functions are in src/cloud.js. Signatures below are actual definitions (JavaScript parameter contracts are documentation).
+G2 approved; G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717; G3-B accepted at c146cb2353feb5cc467f85968fb9f6546fb1f607; G3-C fixture candidate implemented. No custom tasks or library adapter. All five C functions are in src/esp32-coap-client/main/main.c; all four JS functions are in src/cloud.js. Signatures below are actual definitions (JavaScript parameter contracts are documentation).
 
 | Function | Signature | Caller / purpose | Major APIs | Success / failure |
 | --- | --- | --- | --- | --- |
@@ -26,3 +26,26 @@ sent can be NULL; callback PDU/data/options are borrowed and not retained. Sessi
 G3-A accepted at aad119d4a980b37e510940e37a85b835a1630717. All five C signatures and four Node callbacks unchanged. Only app_main adds approved checkpoint storage, task-count snapshots and conditional SDK monitor lifecycle/status. The other four C functions, the exchange/pacing loops, CoAP teardown and Node sources remain unchanged.
 
 Added SDK calls: uxTaskGetNumberOfTasks, heap_caps_monitor_local_minimum_free_size_start/stop. Primary excludes monitor calls at compile time; scoped reads B4 before stop and omits whole-run minimum reporting. On monitor start failure, log measurement failure and stop before sending; on stop failure, label measurement status FAIL and continue guarded resource cleanup. No custom helper added. B1/B2/B3 are logged only when reached; B4 is explicitly unavailable when monitoring was not started; B5/B6 are result-stage pre-CoAP-cleanup readings also on abort, not a fabricated completed campaign.
+
+
+## G3-C host fixture - exact custom functions
+
+Owner: test/coap_fixture.js. No additional server or ESP32 function. JavaScript contracts below document parameter types; source remains plain JavaScript. All functions return undefined. dgram sockets and codec functions are Node/package APIs, not custom functions.
+
+| Custom function | Parameter contract | Caller / purpose / major APIs | Success / failure |
+| --- | --- | --- | --- |
+| main | () | Module entry; validate mode/CASE, create/bind dgram sockets, register named callbacks and watchdog | Starts selected mode/probe; invalid input/start error -> finish(false) |
+| onFrontMessage | (message: Buffer, rinfo: RemoteInfo) | Front message event; coapPacket.parse/generate; forwarding, synthetic response/probe validation, timers | Logs/forwards/injects expected scenario; ignores unexpected peer; invalid input/probe -> finish(false) |
+| onBackMessage | (message: Buffer, rinfo: RemoteInfo) | Backend message event; source validation, codec.parse, response drop/duplication | Forwards unchanged response to locked client; source mismatch ignored; parse/limit error fails |
+| sendDatagram | (socket: dgram.Socket, message: Buffer, port: number, address: string) | Handlers/timer; bounded capture and socket.send(..., onSendComplete) | Queue datagram; synchronous error/limit -> finish(false); malformed outgoing injection is intentional |
+| sendScheduledDatagram | (socket: dgram.Socket, message: Buffer, port: number, address: string) | setTimeout callback | Calls sendDatagram unless ended |
+| onSendComplete | (error: Error or null, bytes: number) | Socket send callback | Completion log, not delivery proof; probe separate-CON success waits for four-byte ACK send completion; errors fail |
+| onSocketError | (error: Error) | Socket error event | finish(false), close owned sockets |
+| onListening | () with socket this | Socket listening event; address(), codec.generate | Endpoint log; probe sends once when front ready |
+| onTimeout | () | 120000 ms watchdog | finish(false, timeout) |
+| onSignal | () | SIGINT/SIGTERM | finish(true, operator-stop); explicitly not a test PASS |
+| finish | (passed: boolean, reason: string) | Terminal paths | Idempotent; clear watchdog/scheduled timers, remove signal handlers, close sockets, set exit code, final summary; non-benign close errors set exit1 |
+
+Runtime package resolution intentionally uses ../src/node_modules/coap-packet because the approved npm manifest is under src while the fixture is under test. This loads the package public entry point, not coap internals. No new module helper/framework or production server change.
+
+Synthetic peers are scoped test stimuli, not a second production CoAP implementation. In particular, separate modes do not implement a general server retransmission engine; loss tests use the unchanged real Node server via proxy mode at G4. No host socket was opened during G3-C validation.
